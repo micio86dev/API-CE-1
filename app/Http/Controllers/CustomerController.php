@@ -9,12 +9,20 @@ use Illuminate\Http\JsonResponse;
 
 class CustomerController extends BaseController
 {   
-    protected $primaryModel = Customer::class;
-    protected $detailedRelations = ['locations.address'];
+    protected string $primaryModel = Customer::class;
+    protected ?string $primaryResource = CustomerResource::class;
+    protected ?string $primaryDetailResource = CustomerDetailResource::class;
+    protected array $fillableFields = ['name', 'email', 'phone', 'address'];
+    protected array $indexRelations = ['locations'];
+    protected array $detailRelations = ['locations'];
+    protected array $belongsToManyRelations = [];
+    protected array $hasManyRelations = ['locations'];
+    protected array $hasOneRelations = [];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {
-        return ['id', 'name', 'created_at', 'updated_at'];
+        return ['id', 'name', 'email', 'phone', 'address', 'created_at', 'updated_at'];
     }
 
     /**

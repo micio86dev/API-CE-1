@@ -13,10 +13,16 @@ use Illuminate\Http\JsonResponse;
 
 class BookController extends BaseController
 {
-    protected $primaryModel = Book::class;
-    protected $primaryResource = BookResource::class;
-    protected $primaryDetailResource = BookDetailResource::class;
-    protected  array $addModFields = ['title', 'price', 'plot', 'published_at', 'collection_id'];
+    protected string $primaryModel = Book::class;
+    protected ?string $primaryResource = BookResource::class;
+    protected ?string $primaryDetailResource = BookDetailResource::class;
+    protected array $fillableFields = ['title', 'price', 'plot', 'published_at', 'collection_id'];
+    protected array $indexRelations = ['collection', 'authors', 'types'];
+    protected array $detailRelations = ['collection', 'authors', 'types', 'quantities', 'locations'];
+    protected array $belongsToManyRelations = ['authors', 'types'];
+    protected array $hasManyRelations = ['quantities'];
+    protected array $hasOneRelations = [];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {
@@ -28,7 +34,7 @@ class BookController extends BaseController
      */
     public function index(): JsonResponse
     {
-        return parent::Baseindex();
+        return parent::baseIndex();
     }
 
     /**
@@ -59,7 +65,7 @@ class BookController extends BaseController
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(int $id): JsonResponse
     {
         return parent::baseDestroy($id);
     }

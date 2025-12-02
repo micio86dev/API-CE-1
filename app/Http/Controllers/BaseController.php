@@ -3,39 +3,72 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
-/*asdasd*/
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+
 class BaseController extends Controller
 {
-    protected $result = [];
-    protected $status = 400;
-    protected $primaryModel;
-    protected $primaryResource;
-    protected $primaryDetailResource;
-    protected array $relations = [];
-    protected array $relationTypes = [];
-    protected array $detailRelations = [];
-    protected array $addModFields = [];
+    /** @var class-string<Model> */
+    protected string $primaryModel;
+
+    /** @var class-string<JsonResource>|null */
+    protected ?string $primaryResource = null;
+
+    /** @var class-string<JsonResource>|null */
+    protected ?string $primaryDetailResource = null;
 
     /**
-     * Display a listing of the resource.
+     * Fields allowed for create/update on the primary model.
+     */
+    protected array $fillableFields = [];
+
+    /**
+     * Relations to load in index responses.
+     */
+    protected array $indexRelations = [];
+
+    /**
+     * Relations to load in show and after store/update responses.        
+     */
+    protected array $detailRelations = [];
+
+    /**
+     * Many-to-many relations (BelongsToMany / MorphToMany).
+     */
+    protected array $belongsToManyRelations = [];
+
+    /**
+     * hasMany relations.
+     */
+    protected array $hasManyRelations = [];
+
+    /**
+     * hasOne relations.
+     */
+    protected array $hasOneRelations = [];
+
+    /**
+     * morphOne relations.
+     */
+    protected array $morphOneRelations = [];
+
+    protected array $result = [];
+    protected int $status = 400;
+
+    /**
+     * GET /resource
      */
     public function baseIndex(): JsonResponse
     {
-        $this->getRelations();
         $query = $this->primaryModel::select($this->select());
 
-        if (!empty($this->relations)) {
-            $query->with($this->relations);
+        if (!empty($this->indexRelations)) {
+            $query->with($this->indexRelations);
         }
 
         $this->result['data'] = $query->paginate();
@@ -45,25 +78,36 @@ class BaseController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * POST /resource
      */
     public function baseStore(FormRequest $request): JsonResponse
     {
-        $this->getRelations();
+        $modelClass = $this->primaryModel;
 
-        $params = Arr::only($request->validated(), $this->addModFields);
-        $item = $this->primaryModel::create($params);
+        /** @var Model $item */
+        $item = DB::transaction(function () use ($modelClass, $request) {
+            $validated = $request->validated();
 
-        $this->syncRelations($item, $request);
+            $params = empty($this->fillableFields)
+                ? $validated
+                : Arr::only($validated, $this->fillableFields);
 
-        $this->result['data'] = $item->refresh();
+            /** @var Model $item */
+            $item = $modelClass::create($params);
+
+            $this->syncRelations($item, $request);
+
+            return $item->fresh($this->detailRelations ?: $this->indexRelations);
+        });
+
+        $this->result['data'] = $item;
         $this->status = 201;
 
         return $this->jsonData();
     }
 
     /**
-     * Display the specified resource.
+     * GET /resource/{id}
      */
     public function baseShow(int $id): JsonResponse
     {
@@ -71,8 +115,8 @@ class BaseController extends Controller
 
         if (!empty($this->detailRelations)) {
             $query->with($this->detailRelations);
-        } elseif (!empty($this->relations)) {
-            $query->with($this->relations);
+        } elseif (!empty($this->indexRelations)) {
+            $query->with($this->indexRelations);
         }
 
         $this->result['data'] = $query->findOrFail($id);
@@ -82,142 +126,148 @@ class BaseController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * PUT/PATCH /resource/{id}
      */
     public function baseUpdate(FormRequest $request, int $id): JsonResponse
     {
-        $this->getRelations();
+        $modelClass = $this->primaryModel;
 
-        $params = Arr::only($request->validated(), $this->addModFields);
-        $item = $this->primaryModel::findOrFail($id);
-        $item->update($params);
+        /** @var Model $item */
+        $item = DB::transaction(function () use ($modelClass, $request, $id) {
+            /** @var Model $item */
+            $item = $modelClass::findOrFail($id);
 
-        $this->syncRelations($item, $request);
+            $validated = $request->validated();
 
-        $this->result['data'] = $item->refresh();
+            $params = empty($this->fillableFields)
+                ? $validated
+                : Arr::only($validated, $this->fillableFields);
+
+            $item->update($params);
+
+            $this->syncRelations($item, $request);
+
+            return $item->fresh($this->detailRelations ?: $this->indexRelations);
+        });
+
+        $this->result['data'] = $item;
         $this->status = 200;
 
         return $this->jsonData();
     }
 
     /**
-     * Remove the specified resource from storage.
+     * DELETE /resource/{id}
      */
     public function baseDestroy(int $id): JsonResponse
     {
-        $this->primaryModel::where('id', $id)->delete();
+        $modelClass = $this->primaryModel;
+        /** @var Model $item */
+        $item = $modelClass::findOrFail($id);
+        $item->delete();
+
         $this->status = 204;
+        $this->result = [];
+
         return $this->jsonData();
     }
 
     /**
-     * Sync many-to-many relationships
+     * Default select fields for queries.
      */
-    protected function syncRelations($item, FormRequest $request): void
+    protected function select(): array
     {
-        foreach ($this->relations as $relationName) {
-            if (!$request->has($relationName) || in_array($relationName, $this->addModFields)) {
-                continue;
-            }
-
-            $relationType = $this->relationTypes[$relationName];
-
-            $relationSingleModels = [
-                MorphOne::class,
-                BelongsTo::class,
-            ];
-
-            $relationManyModels = [
-                BelongsToMany::class,
-                MorphToMany::class,
-                HasMany::class,
-                HasManyThrough::class,
-            ];
-
-            if (in_array($relationType['class'], $relationManyModels)) {
-                $item->$relationName()->sync($request->input($relationName, []));
-            }
-            if (in_array($relationType['class'], $relationSingleModels)) {
-                $params = $request->input($relationName);
-                $params['model_type'] = $item::class;
-                $params['model_id'] = $item->id;
-                $relationModel = $relationType['model']::class;
-                $relationModel::create($params);
-            }
-            
-        }
+        return ['*'];
     }
 
+    /**
+     * JSON response and Resource handling.
+     */
     protected function jsonData(): JsonResponse
     {
         if (isset($this->result['data'])) {
             $data = $this->result['data'];
 
-            if ($data instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator) {
+            // paginate
+            if ($data instanceof LengthAwarePaginator) {
                 if ($this->primaryResource) {
                     $resource = $this->primaryResource::collection($data);
                     return $resource->response()->setStatusCode($this->status);
                 }
-            } else {
-                if ($this->primaryDetailResource) {
-                    $resource = new $this->primaryDetailResource($data);
-                    return $resource->response()->setStatusCode($this->status);
-                }
+
+                return response()->json($data, $this->status);
             }
+
+            // single item
+            if ($this->primaryDetailResource) {
+                $resource = new $this->primaryDetailResource($data);
+                return $resource->response()->setStatusCode($this->status);
+            }
+
+            if ($this->primaryResource) {
+                $resource = new $this->primaryResource($data);
+                return $resource->response()->setStatusCode($this->status);
+            }
+
+            return response()->json($data, $this->status);
         }
 
         return (new JsonResource($this->result))->response()->setStatusCode($this->status);
     }
 
-    protected function select(): array
+    /**
+     * Synchronizes ONLY the relations explicitly declared
+     * in child controllers.
+     */
+    protected function syncRelations(Model $item, FormRequest $request): void
     {
-        return ['id'];
-    }
-
-    protected function getRelations(): array
-    {
-        if (!empty($this->relations)) {
-            return $this->relations;
+        // many-to-many (BelongsToMany / MorphToMany)
+        foreach ($this->belongsToManyRelations as $relation) {
+            if ($request->has($relation)) {
+                $ids = $request->input($relation, []);
+                $item->$relation()->sync($ids);
+            }
         }
 
-        $model = new $this->primaryModel;
-        $reflection = new \ReflectionClass($model);
-        $this->relations = [];
-        $this->relationTypes = [];
+        // hasMany: delete + createMany
+        foreach ($this->hasManyRelations as $relation) {
+            if ($request->has($relation)) {
+                $rows = $request->input($relation, []);
 
-        foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-            if ($method->class === get_class($model) && $method->getNumberOfParameters() === 0) {
-                try {
-                    $result = $method->invoke($model);
+                $item->$relation()->delete();
 
-                    if ($result instanceof \Illuminate\Database\Eloquent\Relations\Relation) {
-                        $relationName = $method->getName();
-                        $this->relations[] = $relationName;
-                        $related = $result->getRelated();
-                        $this->relationTypes[$relationName] = ['class' => get_class($result), 'model' => $related];
-                    }
-                } catch (\Throwable $e) {
-                    continue;
+                if (is_array($rows) && !empty($rows)) {
+                    $item->$relation()->createMany($rows);
                 }
             }
         }
 
-        return $this->relations;
-    }
+        // hasOne
+        foreach ($this->hasOneRelations as $relation) {
+            if ($request->has($relation)) {
+                $data = $request->input($relation);
 
-    protected function addRelations($modifications)
-    {
-        $array = $this->relations;
-
-        foreach ($modifications as $searchFor => $appendText) {
-            foreach ($array as $key => $value) {
-                if ($value === $searchFor) {
-                    $array[$key] = $value . $appendText;
-                    break;
+                $related = $item->$relation()->first();
+                if ($related) {
+                    $related->update($data);
+                } else {
+                    $item->$relation()->create($data);
                 }
             }
         }
 
-        return $array;
+        // morphOne
+        foreach ($this->morphOneRelations as $relation) {
+            if ($request->has($relation)) {
+                $data = $request->input($relation);
+
+                $related = $item->$relation()->first();
+                if ($related) {
+                    $related->update($data);
+                } else {
+                    $item->$relation()->create($data);
+                }
+            }
+        }
     }
 }

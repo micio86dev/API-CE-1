@@ -13,10 +13,16 @@ use Illuminate\Http\JsonResponse;
 
 class LocationController extends BaseController
 {   
-    protected $primaryModel = Location::class;
-    protected $primaryResource = LocationResource::class;
-    protected $primaryDetailResource = LocationDetailResource::class;
-    protected array $addModFields = ['name', 'phone_number', 'email', 'customer_id'];
+    protected string $primaryModel = Location::class;
+    protected ?string $primaryResource = LocationResource::class;
+    protected ?string $primaryDetailResource = LocationDetailResource::class;
+    protected array $fillableFields = ['name', 'phone_number', 'email', 'customer_id'];
+    protected array $indexRelations = ['customer', 'address', 'types'];
+    protected array $detailRelations = ['customer', 'address', 'types', 'books'];
+    protected array $belongsToManyRelations = ['books'];
+    protected array $hasManyRelations = [];
+    protected array $hasOneRelations = ['address'];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {

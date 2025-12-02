@@ -11,20 +11,16 @@ use Illuminate\Http\JsonResponse;
 
 class AddressController extends BaseController
 {
-    protected $primaryModel = Address::class;
-    protected $primaryResource = AddressResource::class;
-    protected $primaryDetailResource = AddressResource::class;
-    protected $primaryRequest = StoreAddressRequest::class;
-    protected  array $addModFields = [
-        'city',
-        'province',
-        'country',
-        'street',
-        'street_number',
-        'zip',
-        'lat',
-        'lng',
-    ];
+    protected string $primaryModel = Address::class;
+    protected ?string $primaryResource = AddressResource::class;
+    protected ?string $primaryDetailResource = AddressDetailResource::class;
+    protected array $fillableFields = ['city', 'province', 'country', 'street', 'street_number', 'zip', 'lat', 'lng'];
+    protected array $indexRelations = [];
+    protected array $detailRelations = [];
+    protected array $belongsToManyRelations = [];
+    protected array $hasManyRelations = [];
+    protected array $hasOneRelations = ['model'];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {

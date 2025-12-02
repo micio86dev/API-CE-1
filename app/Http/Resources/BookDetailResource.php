@@ -14,15 +14,15 @@ class BookDetailResource extends JsonResource
             'price' => $this->price,
             'plot' => $this->plot,
             'publishedAt' => $this->published_at,
-            'types' => $this->types,
+            'types' => TypeResource::collection($this->types),
 
-            'collection' => $this->collection,
+            'collection' => $this->collection, // CollectionResource ToDo
 
-            'authors' => $this->authors,
+            'authors' => AuthorResource::collection($this->authors),
 
-            'locations' => $this->locations,
+            'locations' => LocationResource::collection($this->locations),
 
-            'totalBookQuantity' => $this->locations->sum('pivot.quantity'),
+            'totalBookQuantity' => $this->total_quantity,
         ];
     }
 }

@@ -13,10 +13,15 @@ use Illuminate\Http\JsonResponse;
 
 class AuthorController extends BaseController
 {   
-    protected $primaryModel = Author::class;
-    protected $primaryResource = AuthorResource::class;
-    protected $primaryDetailResource = AuthorDetailResource::class;
-    protected  array $addModFields = ['first_name', 'last_name', 'created_at', 'updated_at'];
+    protected string $primaryModel = Author::class;
+    protected ?string $primaryResource = AuthorResource::class;
+    protected ?string $primaryDetailResource = AuthorDetailResource::class;
+    protected array $fillableFields = ['first_name', 'last_name', 'created_at', 'updated_at'];
+    protected array $indexRelations = ['books'];
+    protected array $detailRelations = ['books'];
+    protected array $belongsToManyRelations = ['books'];
+    protected array $hasManyRelations = [];
+    protected array $hasOneRelations = [];
 
     protected function select(): array
     {

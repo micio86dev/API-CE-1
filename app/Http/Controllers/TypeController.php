@@ -12,14 +12,20 @@ use Illuminate\Http\JsonResponse;
 
 class TypeController extends BaseController
 {   
-    protected $primaryModel = Type::class;
-    protected $primaryResource = TypeResource::class;
-    protected $primaryDetailResource = TypeDetailResource::class;
-    protected array $addModFields = ['name', 'alias'];
+    protected string $primaryModel = Type::class;
+    protected ?string $primaryResource = TypeResource::class;
+    protected ?string $primaryDetailResource = TypeDetailResource::class;
+    protected array $fillableFields = ['name', 'alias'];
+    protected array $indexRelations = ['books', 'locations'];
+    protected array $detailRelations = ['books', 'locations'];
+    protected array $belongsToManyRelations = ['books', 'locations'];
+    protected array $hasManyRelations = [];
+    protected array $hasOneRelations = [];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {
-        return ['id', 'name', 'alias'];
+        return ['id', 'name', 'alias', 'created_at', 'updated_at'];
     }
     /**
      * Display a listing of the resource.

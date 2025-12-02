@@ -14,8 +14,8 @@ class BookResource extends JsonResource
             'price' => $this->price,
             'publishedAt' => $this->published_at,
             'collection' => $this->collection,
-            'types' => $this->types,
-            'authors' => $this->authors,
+            'types' => TypeResource::collection($this->types),
+            'authors' => AuthorResource::collection($this->authors),
         ];
     }
 }

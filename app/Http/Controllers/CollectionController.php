@@ -9,10 +9,16 @@ use Illuminate\Http\Request;
 
 class CollectionController extends BaseController
 {   
-    protected $primaryModel = Collection::class;
-    //protected $primaryResource = CollectionResource::class;
-    //protected $primaryDetailResource = CollectionDetailResource::class;
-    protected array $addModFields = ['name', 'description'];
+    protected string $primaryModel = Collection::class;
+    protected ?string $primaryResource = CollectionResource::class;
+    protected ?string $primaryDetailResource = CollectionDetailResource::class;
+    protected array $fillableFields = ['name', 'description', 'published_at'];
+    protected array $indexRelations = ['books'];
+    protected array $detailRelations = ['books'];
+    protected array $belongsToManyRelations = [];
+    protected array $hasManyRelations = ['books'];
+    protected array $hasOneRelations = [];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {

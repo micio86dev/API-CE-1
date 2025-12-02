@@ -22,7 +22,7 @@ class Collection extends BaseModel
         'published_at' => 'datetime',
     ];
 
-    public function book(){
+    public function books(){
         return $this->hasMany(Book::class);
     }
 }
