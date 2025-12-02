@@ -13,7 +13,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
-
+/*asdasd*/
 class BaseController extends Controller
 {
     protected $result = [];
