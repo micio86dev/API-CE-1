@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -42,6 +43,8 @@ class BaseController extends Controller
      */
     protected array $belongsToManyRelations = [];
 
+    protected array $searcheableFields = [];
+
     /**
      * hasMany relations.
      */
@@ -63,7 +66,7 @@ class BaseController extends Controller
     /**
      * GET /resource
      */
-    public function baseIndex(): JsonResponse
+    public function baseIndex(FormRequest $request): JsonResponse
     {
         $query = $this->primaryModel::select($this->select());
 
@@ -71,10 +74,21 @@ class BaseController extends Controller
             $query->with($this->indexRelations);
         }
 
-        $this->result['data'] = $query->paginate();
+        $query = $this->customFilters($request, $query);
+
+        $this->result['data'] = $query->paginate($request->perpage);
         $this->status = 200;
 
         return $this->jsonData();
+    }
+
+    protected function customFilters(FormRequest $request, $query) // Query builder class
+    {
+        foreach ($this->searcheableFields as $searcheableField) {
+            # TODO search field logic (switch...
+        }
+
+        return $query;
     }
 
     /**
@@ -119,8 +133,13 @@ class BaseController extends Controller
             $query->with($this->indexRelations);
         }
 
-        $this->result['data'] = $query->findOrFail($id);
-        $this->status = 200;
+        try {
+            $this->result['data'] = $query->findOrFail($id);
+            $this->status = 200;
+        } catch (Exception $e) {
+            $this->result['message'] = __((new $this->primaryModel)->getTable() . '/validation.not_found');
+            $this->status = 404;
+        }
 
         return $this->jsonData();
     }

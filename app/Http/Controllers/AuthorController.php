@@ -5,14 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\StoreAuthorRequest;
+use App\Http\Requests\IndexAuthorRequest;
 use App\Http\Requests\UpdateAuthorRequest;
 use App\Http\Resources\AuthorDetailResource;
 use App\Http\Resources\AuthorResource;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class AuthorController extends BaseController
-{   
+{
     protected string $primaryModel = Author::class;
     protected ?string $primaryResource = AuthorResource::class;
     protected ?string $primaryDetailResource = AuthorDetailResource::class;
@@ -22,6 +22,15 @@ class AuthorController extends BaseController
     protected array $belongsToManyRelations = ['books'];
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
+    protected array $searcheableFields = [
+        'equal' => [
+            'age',
+        ],
+        'like' => [
+            'first_name',
+            'last_name',
+        ],
+    ];
 
     protected function select(): array
     {
@@ -31,12 +40,12 @@ class AuthorController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(IndexAuthorRequest $request): JsonResponse
     /**
      * @unauthenticated
      */
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**
