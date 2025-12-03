@@ -8,18 +8,17 @@ use App\Http\Controllers\TypeController;
 use App\Http\Controllers\AddressController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->name('login')->group(function () {
-        Route::post('login')->name('.login');
+        Route::post('login', 'login')->name('.login');
     });
-
-    Route::middleware([
-        'auth.jwt',
-
-    ])->group(function () { //protected routes
+    
+    //protected routes
+    Route::middleware(['auth.jwt'])->group(function () { 
         Route::controller(AuthController::class)->name('auth')->group(function () {
             Route::post('logout', 'logout')->name('.logout');
             Route::post('refresh', 'refresh')->name('.refresh');
@@ -84,5 +83,9 @@ Route::prefix('v1')->group(function () {
         Route::get('{id}', 'show')->name('.show');
         Route::put('{id}', 'update')->name('.update');
         Route::delete('{id}', 'destroy')->name('.destroy');
+    });
+
+    Route::controller(UserController::class)->prefix('user')->name('users')->group(function () {
+        Route::post('', 'store')->name('.store');
     });
 });

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TypeDetailResource extends JsonResource
+class CustomerResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +17,8 @@ class TypeDetailResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'alias' => $this->alias,
-            'books' => BookResource::collection($this->books),
+            'mine' => $this->mine,
+            'locations' => LocationResource::collection($this->locations),
         ];
     }
 }

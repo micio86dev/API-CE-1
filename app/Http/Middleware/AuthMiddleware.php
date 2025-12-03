@@ -9,9 +9,10 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
 
 class AuthMiddleware
-{
+{   
+    
     public function handle(Request $request, Closure $next): Response
-    {
+    {   
         try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
                 return response()->json(['error' => __('auth/validation.user_not_found')], 404);

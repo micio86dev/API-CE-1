@@ -21,8 +21,8 @@ class LocationController extends BaseController
     protected array $detailRelations = ['customer', 'address', 'types', 'books'];
     protected array $belongsToManyRelations = ['books'];
     protected array $hasManyRelations = [];
-    protected array $hasOneRelations = ['address'];
-    protected array $morphOneRelations = [];
+    protected array $hasOneRelations = [];
+    protected array $morphOneRelations = ['address'];
 
     protected function select(): array
     {

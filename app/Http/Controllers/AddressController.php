@@ -6,6 +6,7 @@ use App\Models\Address;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\StoreAddressRequest;
 use App\Http\Resources\AddressResource;
+use App\Http\Resources\AddressDetailResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 

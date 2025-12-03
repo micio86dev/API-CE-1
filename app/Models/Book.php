@@ -11,7 +11,7 @@ class Book extends BaseModel
     /** @use HasFactory<\Database\Factories\BookFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['id', 'title', 'price', 'plot', 'published_at', 'collection_id'];
+    protected $fillable = ['title', 'price', 'plot', 'published_at', 'collection_id'];
 
     protected $hidden = [];
 

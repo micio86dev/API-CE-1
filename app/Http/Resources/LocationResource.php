@@ -19,8 +19,7 @@ class LocationResource extends JsonResource
             'name' => $this->name,
             'phoneNumber' => $this->phone_number,
             'email' => $this->email,
-            'customerId' => $this->customer_id,
-            'customer' => $this->customer,
+            'customer' => new CustomerResource($this->whenLoaded('customer')),
             'address' => new AddressResource($this->whenLoaded('address')),
         ];
     }

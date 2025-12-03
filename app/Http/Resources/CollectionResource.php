@@ -5,20 +5,20 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TypeDetailResource extends JsonResource
+class CollectionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request): array
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'alias' => $this->alias,
-            'books' => BookResource::collection($this->books),
+            'description' => $this->description,
+            'publishedAt' => $this->published_at,
         ];
     }
 }

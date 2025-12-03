@@ -22,7 +22,6 @@ class BookDetailResource extends JsonResource
 
             'locations' => LocationResource::collection($this->locations),
 
-            'totalBookQuantity' => $this->total_quantity,
         ];
     }
 }

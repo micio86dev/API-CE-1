@@ -19,9 +19,10 @@ class LocationDetailResource extends JsonResource
             'name' => $this->name,
             'phoneNumber' => $this->phone_number,
             'email' => $this->email,
-            'customerId' => $this->customer_id,
-            'customer' => $this->customer,
-            'address' => $this->address,
+            'customer' => new CustomerResource($this->whenLoaded('customer')),
+            'address' => new AddressResource($this->whenLoaded('address')),
+            'books' => BookResource::collection($this->whenLoaded('books')),
+            'types' => TypeResource::collection($this->whenLoaded('types')),
         ];
     }
 }

@@ -2,39 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Author;
+use App\Models\User;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\StoreAuthorRequest;
-use App\Http\Requests\UpdateAuthorRequest;
-use App\Http\Resources\AuthorDetailResource;
-use App\Http\Resources\AuthorResource;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\JsonResponse;
 
-class AuthorController extends BaseController
-{   
-    protected string $primaryModel = Author::class;
-    protected ?string $primaryResource = AuthorResource::class;
-    protected ?string $primaryDetailResource = AuthorDetailResource::class;
-    protected array $fillableFields = ['first_name', 'last_name', 'created_at', 'updated_at'];
-    protected array $indexRelations = ['books'];
-    protected array $detailRelations = ['books'];
-    protected array $belongsToManyRelations = ['books'];
+
+class UserController extends BaseController
+{
+    protected string $primaryModel = User::class;
+    protected ?string $primaryResource = null; //ToDo: create UserResource
+    protected ?string $primaryDetailResource = null;
+    protected array $fillableFields = ['name', 'email', 'password'];
+    protected array $indexRelations = [];
+    protected array $detailRelations = [];
+    protected array $belongsToManyRelations = [];
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
+    protected array $morphOneRelations = [];
 
     protected function select(): array
     {
-        return ['id', 'first_name', 'last_name', 'created_at', 'updated_at'];
+        return ['id', 'name', 'email', 'password', 'created_at', 'updated_at'];
     }
 
     /**
      * Display a listing of the resource.
      */
     public function index(): JsonResponse
-    /**
-     * @unauthenticated
-     */
     {
         return parent::baseIndex();
     }
@@ -42,7 +39,7 @@ class AuthorController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAuthorRequest $request): JsonResponse
+    public function store(StoreUserRequest $request): JsonResponse
     {
         return parent::baseStore($request);
     }
@@ -58,9 +55,10 @@ class AuthorController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAuthorRequest $request, int $id): JsonResponse
+    public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
         return parent::baseUpdate($request, $id);
+
     }
 
     /**

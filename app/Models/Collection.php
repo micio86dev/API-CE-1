@@ -11,7 +11,7 @@ class Collection extends BaseModel
     /** @use HasFactory<\Database\Factories\CollectionFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['id', 'name', 'description', 'published_at'];
+    protected $fillable = ['name', 'description', 'published_at'];
 
     protected $hidden = [];
 

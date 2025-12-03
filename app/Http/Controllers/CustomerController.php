@@ -6,15 +6,17 @@ use App\Models\Customer;
 use App\Http\Controllers\BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\CustomerResource;
+use App\Http\Resources\CustomerDetailResource;
 
 class CustomerController extends BaseController
 {   
     protected string $primaryModel = Customer::class;
     protected ?string $primaryResource = CustomerResource::class;
     protected ?string $primaryDetailResource = CustomerDetailResource::class;
-    protected array $fillableFields = ['name', 'email', 'phone', 'address'];
+    protected array $fillableFields = ['name', 'mine'];
     protected array $indexRelations = ['locations'];
-    protected array $detailRelations = ['locations'];
+    protected array $detailRelations = ['locations', 'locations.address', 'locations.types'];
     protected array $belongsToManyRelations = [];
     protected array $hasManyRelations = ['locations'];
     protected array $hasOneRelations = [];
@@ -22,7 +24,7 @@ class CustomerController extends BaseController
 
     protected function select(): array
     {
-        return ['id', 'name', 'email', 'phone', 'address', 'created_at', 'updated_at'];
+        return ['id', 'name', 'mine', 'created_at', 'updated_at'];
     }
 
     /**

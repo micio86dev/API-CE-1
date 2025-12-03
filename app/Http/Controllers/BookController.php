@@ -18,7 +18,7 @@ class BookController extends BaseController
     protected ?string $primaryDetailResource = BookDetailResource::class;
     protected array $fillableFields = ['title', 'price', 'plot', 'published_at', 'collection_id'];
     protected array $indexRelations = ['collection', 'authors', 'types'];
-    protected array $detailRelations = ['collection', 'authors', 'types', 'quantities', 'locations'];
+    protected array $detailRelations = ['collection', 'authors', 'types', 'locations'];
     protected array $belongsToManyRelations = ['authors', 'types'];
     protected array $hasManyRelations = ['quantities'];
     protected array $hasOneRelations = [];
