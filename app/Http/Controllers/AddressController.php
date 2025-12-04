@@ -39,7 +39,7 @@ class AddressController extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all addresses.
      */
     public function index(): JsonResponse
     {
@@ -47,7 +47,7 @@ class AddressController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new address.
      */
     public function store(Request $request): JsonResponse
     {
@@ -55,7 +55,7 @@ class AddressController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified address.
      */
     public function show(int $id): JsonResponse
     {
@@ -63,7 +63,7 @@ class AddressController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified address.
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -71,7 +71,7 @@ class AddressController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified address.
      */
     public function destroy(int $id): JsonResponse
     {

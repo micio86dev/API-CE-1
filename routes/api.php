@@ -30,6 +30,42 @@ Route::prefix('v1')->group(function () {
             Route::put('{id}', 'update')->name('.update');
             Route::delete('{id}', 'destroy')->name('.destroy');
         });
+
+        Route::controller(CustomerController::class)->prefix('customers')->name('customers')->group(function () {
+            Route::post('', 'store')->name('.store');
+            Route::put('{id}', 'update')->name('.update');
+            Route::delete('{id}', 'destroy')->name('.destroy');
+        });
+
+        Route::controller(LocationController::class)->prefix('locations')->name('locations')->group(function () {
+            Route::post('', 'store')->name('.store');
+            Route::put('{id}', 'update')->name('.update');
+            Route::delete('{id}', 'destroy')->name('.destroy');
+        });
+
+        Route::controller(CollectionController::class)->prefix('collections')->name('collections')->group(function () {
+            Route::post('', 'store')->name('.store');
+            Route::put('{id}', 'update')->name('.update');
+            Route::delete('{id}', 'destroy')->name('.destroy');
+        });
+
+        Route::controller(TypeController::class)->prefix('types')->name('types')->group(function () {
+            Route::post('', 'store')->name('.store');
+            Route::put('{id}', 'update')->name('.update');
+            Route::delete('{id}', 'destroy')->name('.destroy');
+        });
+
+        Route::controller(AddressController::class)->prefix('addresses')->name('addresses')->group(function () {
+            Route::post('', 'store')->name('.store');
+            Route::put('{id}', 'update')->name('.update');
+            Route::delete('{id}', 'destroy')->name('.destroy');
+        });
+
+        Route::controller(BookController::class)->prefix('books')->name('books')->group(function () {
+            Route::post('', 'store')->name('.store');
+            Route::put('{id}', 'update')->name('.update');
+            Route::delete('{id}', 'destroy')->name('.destroy');
+        });
     });
 
     Route::controller(AuthorController::class)->prefix('authors')->name('authors')->group(function () {
@@ -39,50 +75,32 @@ Route::prefix('v1')->group(function () {
 
     Route::controller(CustomerController::class)->prefix('customers')->name('customers')->group(function () {
         Route::get('', 'index')->name('.index');
-        Route::post('', 'store')->name('.store');
         Route::get('{id}', 'show')->name('.show');
-        Route::put('{id}', 'update')->name('.update');
-        Route::delete('{id}', 'destroy')->name('.destroy');
     });
 
     Route::controller(LocationController::class)->prefix('location')->name('locations')->group(function () {
         Route::get('', 'index')->name('.index');
-        Route::post('', 'store')->name('.store');
         Route::get('{id}', 'show')->name('.show');
-        Route::put('{id}', 'update')->name('.update');
-        Route::delete('{id}', 'destroy')->name('.destroy');
     });
 
     Route::controller(CollectionController::class)->prefix('collection')->name('collections')->group(function () {
         Route::get('', 'index')->name('.index');
-        Route::post('', 'store')->name('.store');
         Route::get('{id}', 'show')->name('.show');
-        Route::put('{id}', 'update')->name('.update');
-        Route::delete('{id}', 'destroy')->name('.destroy');
     });
 
     Route::controller(TypeController::class)->prefix('type')->name('types')->group(function () {
         Route::get('', 'index')->name('.index');
-        Route::post('', 'store')->name('.store');
         Route::get('{id}', 'show')->name('.show');
-        Route::put('{id}', 'update')->name('.update');
-        Route::delete('{id}', 'destroy')->name('.destroy');
     });
 
     Route::controller(AddressController::class)->prefix('address')->name('addresses')->group(function () {
         Route::get('', 'index')->name('.index');
-        Route::post('', 'store')->name('.store');
         Route::get('{id}', 'show')->name('.show');
-        Route::put('{id}', 'update')->name('.update');
-        Route::delete('{id}', 'destroy')->name('.destroy');
     });
 
     Route::controller(BookController::class)->prefix('book')->name('books')->group(function () {
         Route::get('', 'index')->name('.index');
-        Route::post('', 'store')->name('.store');
         Route::get('{id}', 'show')->name('.show');
-        Route::put('{id}', 'update')->name('.update');
-        Route::delete('{id}', 'destroy')->name('.destroy');
     });
 
     Route::controller(UserController::class)->prefix('user')->name('users')->group(function () {
