@@ -22,6 +22,8 @@ class BookDetailResource extends JsonResource
 
             'locations' => LocationResource::collection($this->whenLoaded('locations')),
 
+
+
         ];
     }
 }

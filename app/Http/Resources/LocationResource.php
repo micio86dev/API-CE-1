@@ -21,6 +21,7 @@ class LocationResource extends JsonResource
             'email' => $this->email,
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'address' => new AddressResource($this->whenLoaded('address')),
+            'quantity' => optional($this->pivot)->quantity,
         ];
     }
 }

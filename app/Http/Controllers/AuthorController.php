@@ -19,14 +19,12 @@ class AuthorController extends BaseController
     protected ?string $primaryDetailResource = AuthorDetailResource::class;
     protected array $fillableFields = ['first_name', 'last_name', 'created_at', 'updated_at'];
     protected array $indexRelations = ['books'];
-    protected array $detailRelations = ['books'];
+    protected array $detailRelations = ['books', 'books.collection', 'books.types', 'books.locations'];
     protected array $belongsToManyRelations = ['books'];
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
     protected array $searchableFields = [
-        'equal' => [
-            'age',
-        ],
+
         'like' => [
             'first_name',
             'last_name',
