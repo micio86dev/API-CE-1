@@ -29,7 +29,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all users.
      */
     public function index(): JsonResponse
     {
@@ -37,7 +37,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new user.
      */
     public function store(StoreUserRequest $request): JsonResponse
     {
@@ -45,7 +45,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified user.
      */
     public function show(int $id): JsonResponse
     {
@@ -53,7 +53,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified user.
      */
     public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
@@ -62,7 +62,7 @@ class UserController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified user.
      */
     public function destroy(int $id): JsonResponse
     {

@@ -14,13 +14,13 @@ class BookDetailResource extends JsonResource
             'price' => $this->price,
             'plot' => $this->plot,
             'publishedAt' => $this->published_at,
-            'types' => TypeResource::collection($this->types),
+            'types' => TypeResource::collection($this->whenLoaded('types')),
 
             'collection' => $this->collection, // CollectionResource ToDo
 
-            'authors' => AuthorResource::collection($this->authors),
+            'authors' => AuthorResource::collection($this->whenLoaded('authors')),
 
-            'locations' => LocationResource::collection($this->locations),
+            'locations' => LocationResource::collection($this->whenLoaded('locations')),
 
         ];
     }

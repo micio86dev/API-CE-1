@@ -11,6 +11,7 @@ use App\Http\Resources\AuthorDetailResource;
 use App\Http\Resources\AuthorResource;
 use Illuminate\Http\JsonResponse;
 
+
 class AuthorController extends BaseController
 {
     protected string $primaryModel = Author::class;
@@ -22,7 +23,7 @@ class AuthorController extends BaseController
     protected array $belongsToManyRelations = ['books'];
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
-    protected array $searcheableFields = [
+    protected array $searchableFields = [
         'equal' => [
             'age',
         ],
@@ -38,18 +39,16 @@ class AuthorController extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all authors.
      */
     public function index(IndexAuthorRequest $request): JsonResponse
-    /**
-     * @unauthenticated
-     */
+ 
     {
         return parent::baseIndex($request);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new author.
      */
     public function store(StoreAuthorRequest $request): JsonResponse
     {
@@ -57,7 +56,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified author.
      */
     public function show(int $id): JsonResponse
     {
@@ -65,7 +64,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified author.
      */
     public function update(UpdateAuthorRequest $request, int $id): JsonResponse
     {
@@ -73,7 +72,7 @@ class AuthorController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified author.
      */
     public function destroy(int $id): JsonResponse
     {

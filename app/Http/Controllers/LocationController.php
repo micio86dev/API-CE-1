@@ -30,7 +30,7 @@ class LocationController extends BaseController
     }
     
     /**
-     * Display a listing of the resource.
+     * Display all locations.
      */
     public function index(): JsonResponse
     {
@@ -38,7 +38,7 @@ class LocationController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new location.
      */
     public function store(StoreLocationRequest $request): JsonResponse
     {
@@ -46,7 +46,7 @@ class LocationController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified location.
      */
     public function show(int $id): JsonResponse
     {
@@ -54,7 +54,7 @@ class LocationController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified location.
      */
     public function update(UpdateLocationRequest $request, int $id): JsonResponse
     {
@@ -62,7 +62,7 @@ class LocationController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified location.
      */
     public function destroy(int $id): JsonResponse
     {

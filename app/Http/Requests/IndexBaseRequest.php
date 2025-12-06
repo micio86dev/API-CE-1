@@ -23,8 +23,8 @@ class IndexBaseRequest extends FormRequest
     {
         return [
             /**
-             * Generic search key, find in author's firstName and lastName.
-             * @example Giacomo
+             * Generic search key on all searchable fields
+             * @example Giacomo - 01/01/2025 - 10 - Fantasy - etc...
              */
             'search' => ['nullable', 'string', 'max:255'],
 
@@ -35,7 +35,7 @@ class IndexBaseRequest extends FormRequest
             'page' => ['nullable', 'integer', 'min:1'],
 
             /**
-             * Number of records in any page (max 100)
+             * Number of records per page (max 100)
              * @example [1, 2, 3]
              */
             'perpage' => ['nullable', 'integer', 'min:1', 'max:100'],

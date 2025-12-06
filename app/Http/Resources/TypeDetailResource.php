@@ -18,7 +18,7 @@ class TypeDetailResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'alias' => $this->alias,
-            'books' => BookResource::collection($this->books),
+            'books' => BookResource::collection($this->whenLoaded('books')),
         ];
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Resources\AddressResource;
 use App\Http\Resources\AddressDetailResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\IndexAddressRequest;
 
 class AddressController extends BaseController
 {
@@ -22,6 +23,24 @@ class AddressController extends BaseController
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = ['model'];
     protected array $morphOneRelations = [];
+    protected array $searchableFields = [
+        
+        'equal' => [
+            'city',
+            'province',
+            'country',
+            'street',
+            'street_number',
+            'zip',
+        ],
+        'like' => [
+            'city',
+            'province',
+            'country',
+            'street',
+            'street_number',
+        ],
+    ];
 
     protected function select(): array
     {
@@ -41,9 +60,9 @@ class AddressController extends BaseController
     /**
      * Display all addresses.
      */
-    public function index(): JsonResponse
+    public function index(IndexAddressRequest $request): JsonResponse
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**

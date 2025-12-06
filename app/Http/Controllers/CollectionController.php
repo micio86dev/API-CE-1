@@ -26,7 +26,7 @@ class CollectionController extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all collections.
      */
     public function index(): JsonResponse
     {
@@ -34,7 +34,7 @@ class CollectionController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new collection.
      */
     public function store(Request $request): JsonResponse
     {
@@ -42,7 +42,7 @@ class CollectionController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified collection.
      */
     public function show(int $id): JsonResponse
     {
@@ -50,7 +50,7 @@ class CollectionController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified collection.
      */
     public function update(Request $request, int $collection_id): JsonResponse
     {
@@ -58,7 +58,7 @@ class CollectionController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified collection.
      */
     public function destroy(int $id): JsonResponse
     {

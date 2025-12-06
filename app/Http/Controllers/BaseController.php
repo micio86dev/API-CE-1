@@ -82,14 +82,37 @@ class BaseController extends Controller
         return $this->jsonData();
     }
 
-    protected function customFilters(FormRequest $request, $query) // Query builder class
-    {
-        foreach ($this->searcheableFields as $searcheableField) {
-            # TODO search field logic (switch...
-        }
+    protected function customFilters(FormRequest $request, $query)
+{
+    // 1) Specific filters based on per-field operations
+    foreach ($this->searchableFields as $operation => $fields) {
+        foreach ($fields as $field) {
+            $value = $request->input($field);
 
-        return $query;
+            // Skip if not provided
+            if ($value === null || $value === '') {
+                continue;
+            }
+
+            if ($operation === 'equal') {
+                $query->where($field, '=', $value);
+            } elseif ($operation === 'like') {
+                $query->where($field, 'like', '%' . $value . '%');
+            }
+        }
     }
+
+    // 2) Generic 'search' across all "like" fields
+    if ($search = $request->input('search')) {
+        $query->where(function ($q) use ($search) {
+            foreach ($this->searchableFields['like'] ?? [] as $searchField) {
+                $q->orWhere($searchField, 'like', '%' . $search . '%');
+            }
+        });
+    }
+
+    return $query;
+}
 
     /**
      * POST /resource

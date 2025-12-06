@@ -28,7 +28,7 @@ class CustomerController extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all customers.
      */
     public function index(): JsonResponse
     {   
@@ -36,7 +36,7 @@ class CustomerController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new customer.
      */
     public function store(Request $request): JsonResponse
     {
@@ -44,14 +44,14 @@ class CustomerController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified customer.
      */
     public function show(int $id): JsonResponse
     {
         return parent::baseShow($id);
     }
     /**
-     * Update the specified resource in storage.
+     * Update the specified customer.
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -59,7 +59,7 @@ class CustomerController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified customer.
      */
     public function destroy(int $id): JsonResponse
     {

@@ -28,7 +28,7 @@ class TypeController extends BaseController
         return ['id', 'name', 'alias', 'created_at', 'updated_at'];
     }
     /**
-     * Display a listing of the resource.
+     * Display all types.
      */
     public function index(): JsonResponse
     {
@@ -36,7 +36,7 @@ class TypeController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new type.
      */
     public function store(StoreTypeRequest $request): JsonResponse
     {
@@ -44,7 +44,7 @@ class TypeController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified type.
      */
     public function show(int $id): JsonResponse
     {
@@ -52,7 +52,7 @@ class TypeController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified type.
      */
     public function update(UpdateTypeRequest $request, int $id): JsonResponse
     {
@@ -60,7 +60,7 @@ class TypeController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified type.
      */
     public function destroy(int $id): JsonResponse
     {

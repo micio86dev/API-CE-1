@@ -30,7 +30,7 @@ class BookController extends BaseController
     }
 
     /**
-     * Display a listing of the resource.
+     * Display all books.
      */
     public function index(): JsonResponse
     {
@@ -38,7 +38,7 @@ class BookController extends BaseController
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new book.
      */
     public function store(StoreBookRequest $request): JsonResponse
     {
@@ -46,7 +46,7 @@ class BookController extends BaseController
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified book.
      */
     public function show(int $id): JsonResponse
     {
@@ -54,7 +54,7 @@ class BookController extends BaseController
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified book.
      */
     public function update(UpdateBookRequest $request, int $id): JsonResponse
     {
@@ -63,7 +63,7 @@ class BookController extends BaseController
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified book.
      */
     public function destroy(int $id): JsonResponse
     {

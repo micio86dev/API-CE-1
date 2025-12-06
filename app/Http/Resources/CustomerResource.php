@@ -18,7 +18,7 @@ class CustomerResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'mine' => $this->mine,
-            'locations' => LocationResource::collection($this->locations),
+            'locations' => LocationResource::collection($this->whenLoaded('locations')),
         ];
     }
 }
