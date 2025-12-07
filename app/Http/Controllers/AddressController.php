@@ -32,14 +32,7 @@ class AddressController extends BaseController
             'street',
             'street_number',
             'zip',
-        ],
-        'like' => [
-            'city',
-            'province',
-            'country',
-            'street',
-            'street_number',
-        ],
+        ]
     ];
 
     protected function select(): array

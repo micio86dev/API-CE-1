@@ -66,7 +66,7 @@ class BaseController extends Controller
     /**
      * GET /resource
      */
-    public function baseIndex(FormRequest $request): JsonResponse
+    public function baseIndex(?FormRequest $request = null): JsonResponse
     {
         $query = $this->primaryModel::select($this->select());
 
@@ -74,45 +74,69 @@ class BaseController extends Controller
             $query->with($this->indexRelations);
         }
 
-        $query = $this->customFilters($request, $query);
+        if ($request && $request instanceof FormRequest) {
+            $query = $this->customFilters($request, $query);
+        }
 
-        $this->result['data'] = $query->paginate($request->perpage);
+        $this->result['data'] = $query->paginate($request?->perpage ?? 10); //default 10 items per page
         $this->status = 200;
 
         return $this->jsonData();
     }
 
     protected function customFilters(FormRequest $request, $query)
-{
-    // 1) Specific filters based on per-field operations
-    foreach ($this->searchableFields as $operation => $fields) {
-        foreach ($fields as $field) {
-            $value = $request->input($field);
+    {
+        foreach ($this->searchableFields ?? [] as $operation => $fields) {
+            foreach ($fields as $paramOrIndex => $column) {
 
-            // Skip if not provided
-            if ($value === null || $value === '') {
-                continue;
-            }
+                // if the key is numeric, param name == column name
+                $paramName = is_int($paramOrIndex) ? $column : $paramOrIndex;
 
-            if ($operation === 'equal') {
-                $query->where($field, '=', $value);
-            } elseif ($operation === 'like') {
-                $query->where($field, 'like', '%' . $value . '%');
+                $value = $request->input($paramName);
+
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                switch ($operation) {
+                    case 'equal':
+                        $query->where($column, '=', $value);
+                        break;
+
+                    case 'like':
+                        $query->where($column, 'like', '%' . $value . '%');
+                        break;
+
+                    case 'less_than':
+                        $query->where($column, '<=', $value);
+                        break;
+
+                    case 'greater_than':
+                        $query->where($column, '>=', $value);
+                        break;
+                }
             }
         }
+
+        // generic 'search' stays as you already have it
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                foreach ($this->searchableFields['like'] ?? [] as $searchField) {
+                    $q->orWhere($searchField, 'like', '%' . $search . '%');
+                }
+            });
+        }
+
+        // allow child controllers to add relation-specific filters
+        $this->applyRelationFilters($request, $query);
+
+        return $query;
     }
 
-    // 2) Generic 'search' across all "like" fields
-    if ($search = $request->input('search')) {
-        $query->where(function ($q) use ($search) {
-            foreach ($this->searchableFields['like'] ?? [] as $searchField) {
-                $q->orWhere($searchField, 'like', '%' . $search . '%');
-            }
-        });
+    protected function applyRelationFilters(FormRequest $request, $query)
+    {
+        // Used in child controllers to add relation-specific filters
     }
-
-    return $query;
-}
 
     /**
      * POST /resource

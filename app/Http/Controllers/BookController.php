@@ -9,6 +9,8 @@ use App\Http\Requests\UpdateBookRequest;
 use App\Http\Resources\BookResource;
 use App\Http\Resources\BookDetailResource;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\IndexBookRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 
 class BookController extends BaseController
@@ -23,6 +25,50 @@ class BookController extends BaseController
     protected array $hasManyRelations = ['quantities'];
     protected array $hasOneRelations = [];
     protected array $morphOneRelations = [];
+    protected array $searchableFields = [
+        'like' => [
+            'title',
+        ],
+        'less_than' => [
+            'max_price'        => 'price',
+            'published_before' => 'published_at',
+        ],
+        'greater_than' => [
+            'min_price'        => 'price',
+            'published_after'  => 'published_at',
+        ],
+    ];
+
+    protected function applyRelationFilters(FormRequest $request, $query)
+    {
+        // Author first name
+        if ($first_name = $request->input('authors.first_name')) {
+            $query->whereHas('authors', function ($q) use ($first_name) {
+                $q->where('first_name', 'equal', $first_name);
+            });
+        }
+
+        // Author last name
+        if ($last_name = $request->input('authors.last_name')) {
+            $query->whereHas('authors', function ($q) use ($last_name) {
+                $q->where('last_name', 'equal', $last_name);
+            });
+        }
+
+        // Type name
+        if ($type_name = $request->input('types.name')) {
+            $query->whereHas('types', function ($q) use ($type_name) {
+                $q->where('name', 'equal', $type_name);
+            });
+        }
+
+        // Collection name
+        if ($collection_name = $request->input('collection.name')) {
+            $query->whereHas('collection', function ($q) use ($collection_name) {
+                $q->where('name', 'equal', $collection_name);
+            });
+        }
+    }
 
     protected function select(): array
     {
@@ -32,9 +78,9 @@ class BookController extends BaseController
     /**
      * Display all books.
      */
-    public function index(): JsonResponse
+    public function index(IndexBookRequest $request): JsonResponse
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**
@@ -59,7 +105,6 @@ class BookController extends BaseController
     public function update(UpdateBookRequest $request, int $id): JsonResponse
     {
         return parent::baseUpdate($request, $id);
-
     }
 
     /**
