@@ -73,9 +73,13 @@ class BaseController extends Controller
         if (!empty($this->indexRelations)) {
             $query->with($this->indexRelations);
         }
-
-        if ($request && $request instanceof FormRequest) {
-            $query = $this->customFilters($request, $query);
+        // Apply custom filters if they are defined
+        if ($request && $request instanceof FormRequest && !empty($this->searchableFields)) {
+            $this->customFilters($request, $query);
+        }
+        // Apply relation filters if they are defined
+        if (!empty($this->relationFilters)) {
+            $this->applyRelationFilters($request, $query);
         }
 
         $this->result['data'] = $query->paginate($request?->perpage ?? 10); //default 10 items per page
@@ -118,24 +122,75 @@ class BaseController extends Controller
             }
         }
 
-        // generic 'search' stays as you already have it
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
-                foreach ($this->searchableFields['like'] ?? [] as $searchField) {
-                    $q->orWhere($searchField, 'like', '%' . $search . '%');
+
+                // 1) Local columns
+                foreach ($this->globalSearch['columns'] ?? [] as $column) {
+                    $q->orWhere($column, 'like', '%' . $search . '%');
+                }
+
+                // 2) Relation columns
+                foreach ($this->globalSearch['relations'] ?? [] as $relation => $fields) {
+                    $q->orWhereHas($relation, function ($rq) use ($fields, $search) {
+                        $rq->where(function ($inner) use ($fields, $search) {
+                            foreach ($fields as $field) {
+                                $inner->orWhere($field, 'like', '%' . $search . '%');
+                            }
+                        });
+                    });
                 }
             });
         }
-
-        // allow child controllers to add relation-specific filters
-        $this->applyRelationFilters($request, $query);
-
-        return $query;
     }
 
-    protected function applyRelationFilters(FormRequest $request, $query)
+    /**
+     * Apply relation filters to the query.
+     * 
+     * Expected $this->relationFilters structure:
+     * [
+     *     'equal' => [
+     *         'relationName' => ['field1', 'field2'],
+     *     ],
+     *     'like' => [
+     *         'relationName' => ['field3'],
+     *     ],
+     * ]
+     */
+    protected function applyRelationFilters(FormRequest $request, $query): void
     {
-        // Used in child controllers to add relation-specific filters
+        foreach ($this->relationFilters ?? [] as $operation => $relations) {
+            foreach ($relations as $relation => $fields) {
+                foreach ($fields as $field) {
+                    $param = "{$relation}.{$field}";
+                    $value = $request->input($param);
+
+                    if ($value === null || $value === '') {
+                        continue;
+                    }
+
+                    $query->whereHas($relation, function ($q) use ($field, $operation, $value) {
+                        switch ($operation) {
+                            case 'equal':
+                                $q->where($field, '=', $value);
+                                break;
+
+                            case 'like':
+                                $q->where($field, 'like', '%' . $value . '%');
+                                break;
+
+                            case 'less_than':
+                                $q->where($field, '<=', $value);
+                                break;
+
+                            case 'greater_than':
+                                $q->where($field, '>=', $value);
+                                break;
+                        }
+                    });
+                }
+            }
+        }
     }
 
     /**

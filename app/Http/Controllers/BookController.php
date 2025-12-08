@@ -39,36 +39,22 @@ class BookController extends BaseController
         ],
     ];
 
-    protected function applyRelationFilters(FormRequest $request, $query)
-    {
-        // Author first name
-        if ($first_name = $request->input('authors.first_name')) {
-            $query->whereHas('authors', function ($q) use ($first_name) {
-                $q->where('first_name', 'equal', $first_name);
-            });
-        }
+    protected array $relationFilters = [
+        'equal' => [
+            'collection' => ['name'],
+            'authors' => ['first_name', 'last_name'],
+            'types' => ['name'],
+        ],
+    ];
 
-        // Author last name
-        if ($last_name = $request->input('authors.last_name')) {
-            $query->whereHas('authors', function ($q) use ($last_name) {
-                $q->where('last_name', 'equal', $last_name);
-            });
-        }
-
-        // Type name
-        if ($type_name = $request->input('types.name')) {
-            $query->whereHas('types', function ($q) use ($type_name) {
-                $q->where('name', 'equal', $type_name);
-            });
-        }
-
-        // Collection name
-        if ($collection_name = $request->input('collection.name')) {
-            $query->whereHas('collection', function ($q) use ($collection_name) {
-                $q->where('name', 'equal', $collection_name);
-            });
-        }
-    }
+    protected array $globalSearch = [
+        'columns' => ['title', 'price', 'plot'],
+        'relations' => [
+            'collection' => ['name'],
+            'authors' => ['first_name', 'last_name'],
+            'types' => ['name'],
+        ],
+    ];
 
     protected function select(): array
     {
