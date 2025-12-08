@@ -35,6 +35,11 @@ class AddressController extends BaseController
         ]
     ];
 
+    protected array $globalSearch = [
+        'columns' => ['city', 'province', 'country', 'street', 'street_number', 'zip'],
+    ];
+
+
     protected function select(): array
     {
         return [

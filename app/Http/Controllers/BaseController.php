@@ -78,7 +78,7 @@ class BaseController extends Controller
             $this->customFilters($request, $query);
         }
         // Apply relation filters if they are defined
-        if (!empty($this->relationFilters)) {
+        if ($request && $request instanceof FormRequest && !empty($this->relationFilters)) {
             $this->applyRelationFilters($request, $query);
         }
 
