@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreCustomerRequest extends FormRequest
+class IndexCollectionRequest extends IndexBaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,17 +21,13 @@ class StoreCustomerRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        return parent::rules() +        
+        [
             /**
-             * Customer's name.
-             * @example Feltrinelli S.p.A.
+             * Collection's name.
+             * @example Collana Narrativa
              */
-            'name' => ['required', 'string', 'max:150'],
-            /**
-             * Mine office/warehouse or customer?
-             * @example y/n
-             */
-            'mine' => ['required', 'string', 'in:y,n', 'default:n'],
+            'name' => ['nullable', 'string', 'max:150'],
         ];
     }
 }

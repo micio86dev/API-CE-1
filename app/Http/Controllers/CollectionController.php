@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\IndexCollectionRequest;
+use App\Http\Resources\CollectionResource;
+use App\Http\Resources\CollectionDetailResource;
 
 class CollectionController extends BaseController
 {   
@@ -19,7 +21,24 @@ class CollectionController extends BaseController
     protected array $hasManyRelations = ['books'];
     protected array $hasOneRelations = [];
     protected array $morphOneRelations = [];
+    protected array $searchableFields = [
+        'like' => [
+            'name',
+        ],
+    ];
 
+    protected array $relationFilters = [
+        'like' => [
+            'books' => ['title'],
+        ],
+    ];
+
+    protected array $globalSearch = [
+        'columns' => ['name', 'description'],
+        'relations' => [
+            'books' => ['title'],
+        ],
+    ];
     protected function select(): array
     {
         return ['id', 'name', 'description'];
@@ -28,9 +47,9 @@ class CollectionController extends BaseController
     /**
      * Display all collections.
      */
-    public function index(): JsonResponse
+    public function index(IndexCollectionRequest $request): JsonResponse
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**

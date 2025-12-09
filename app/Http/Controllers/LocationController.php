@@ -10,6 +10,7 @@ use App\Http\Resources\LocationResource;
 use App\Http\Resources\LocationDetailResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\IndexLocationRequest;
 
 class LocationController extends BaseController
 {   
@@ -23,6 +24,35 @@ class LocationController extends BaseController
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
     protected array $morphOneRelations = ['address'];
+    protected array $searchableFields = [
+        'like' => [
+            'name',
+            'email',
+        ],
+        'equal' => [
+            'phone_number',
+            'customer_id',
+        ],
+    ];
+
+    protected array $relationFilters = [
+        'like' => [
+            'customer' => ['name'],
+            'address' => ['city'],
+        ],
+        'equal' => [
+            'address' => ['province', 'country', 'street', 'street_number', 'zip'],
+            'customer' => ['mine'],
+        ],
+    ];
+
+    protected array $globalSearch = [
+        'columns' => ['name', 'phone_number', 'email'],
+        'relations' => [
+            'customer' => ['name'],
+            'address' => ['city', 'province', 'country', 'street', 'street_number', 'zip'],
+        ],
+    ];
 
     protected function select(): array
     {
@@ -32,9 +62,9 @@ class LocationController extends BaseController
     /**
      * Display all locations.
      */
-    public function index(): JsonResponse
+    public function index(IndexLocationRequest $request): JsonResponse
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**

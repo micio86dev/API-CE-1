@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\CustomerDetailResource;
+use App\Http\Requests\IndexCustomerRequest;
 
 class CustomerController extends BaseController
 {   
@@ -15,12 +16,33 @@ class CustomerController extends BaseController
     protected ?string $primaryResource = CustomerResource::class;
     protected ?string $primaryDetailResource = CustomerDetailResource::class;
     protected array $fillableFields = ['name', 'mine'];
-    protected array $indexRelations = ['locations'];
+    protected array $indexRelations = ['locations', 'locations.address'];
     protected array $detailRelations = ['locations', 'locations.address', 'locations.types'];
     protected array $belongsToManyRelations = [];
     protected array $hasManyRelations = ['locations'];
     protected array $hasOneRelations = [];
     protected array $morphOneRelations = [];
+    protected array $searchableFields = [
+        'like' => [
+            'name',
+        ],
+        'equal' => [
+            'mine',
+        ],
+    ];
+
+    protected array $relationFilters = [
+        'equal' => [
+            'locations.address' => ['city', 'province', 'country', 'street', 'street_number', 'zip'],
+        ],
+    ];
+    
+    protected array $globalSearch = [
+        'columns' => ['name'],
+        'relations' => [
+            'locations.address' => ['city', 'province', 'country', 'street', 'street_number', 'zip'],
+        ],
+    ];
 
     protected function select(): array
     {
@@ -30,9 +52,9 @@ class CustomerController extends BaseController
     /**
      * Display all customers.
      */
-    public function index(): JsonResponse
+    public function index(IndexCustomerRequest $request): JsonResponse
     {   
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**

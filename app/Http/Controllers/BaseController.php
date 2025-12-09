@@ -163,7 +163,7 @@ class BaseController extends Controller
             foreach ($relations as $relation => $fields) {
                 foreach ($fields as $field) {
                     $param = "{$relation}.{$field}";
-                    $value = $request->input($param);
+                    $value = data_get($request->all(), $param);
 
                     if ($value === null || $value === '') {
                         continue;
