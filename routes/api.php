@@ -16,9 +16,17 @@ Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->name('login')->group(function () {
         Route::post('login', 'login')->name('.login');
     });
-    
+
+
+    Route::middleware(['optional.jwt'])->group(function () {
+        Route::controller(BookController::class)->prefix('book')->name('books')->group(function () {
+            Route::get('', 'index')->name('.index');
+            Route::get('{id}', 'show')->name('.show');
+        });
+    });
+
     //protected routes
-    Route::middleware(['auth.jwt'])->group(function () { 
+    Route::middleware(['auth.jwt'])->group(function () {
         Route::controller(AuthController::class)->name('auth')->group(function () {
             Route::post('logout', 'logout')->name('.logout');
             Route::post('refresh', 'refresh')->name('.refresh');
@@ -94,11 +102,6 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::controller(AddressController::class)->prefix('address')->name('addresses')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(BookController::class)->prefix('book')->name('books')->group(function () {
         Route::get('', 'index')->name('.index');
         Route::get('{id}', 'show')->name('.show');
     });

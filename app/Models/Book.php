@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\BaseModel;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Book extends BaseModel
@@ -22,6 +23,11 @@ class Book extends BaseModel
         'plot' => 'string',
         'published_at' => 'datetime',
         'collection_id' => 'integer',
+        'total_quantity' => 'integer',
+    ];
+
+    protected $appends = [
+        'total_quantity'
     ];
 
     public function collection()
@@ -54,6 +60,10 @@ class Book extends BaseModel
     // Get total quantity across all locations
     public function getTotalQuantityAttribute()
     {
+        /*if (array_key_exists('quantities_sum_quantity', $this->attributes)) {
+            return (int) $this->attributes['quantities_sum_quantity'];
+        }*/
+
         return $this->quantities()->sum('quantity');
     }
 }

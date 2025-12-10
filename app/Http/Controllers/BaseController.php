@@ -63,6 +63,15 @@ class BaseController extends Controller
     protected array $result = [];
     protected int $status = 400;
 
+
+    protected function isAdmin($request): bool
+    {
+        if (!empty($request->loggedUser)) {
+            return $request->loggedUser->role(config('constants.ROLE.admin'));
+        }
+        return false;
+    }
+
     /**
      * GET /resource
      */
@@ -159,13 +168,14 @@ class BaseController extends Controller
      */
     protected function applyRelationFilters(FormRequest $request, $query): void
     {
+        $all = $request->all();
+
         foreach ($this->relationFilters ?? [] as $operation => $relations) {
             foreach ($relations as $relation => $fields) {
                 foreach ($fields as $field) {
                     $param = "{$relation}.{$field}";
-                    $value = data_get($request->all(), $param);
 
-                    if ($value === null || $value === '') {
+                    if (!$value = data_get($all, $param)) {
                         continue;
                     }
 

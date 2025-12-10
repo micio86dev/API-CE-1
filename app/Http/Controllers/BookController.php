@@ -10,8 +10,6 @@ use App\Http\Resources\BookResource;
 use App\Http\Resources\BookDetailResource;
 use Illuminate\Http\JsonResponse;
 use App\Http\Requests\IndexBookRequest;
-use Illuminate\Foundation\Http\FormRequest;
-
 
 class BookController extends BaseController
 {
