@@ -167,7 +167,10 @@ class BaseController extends Controller
                 foreach ($fields as $field) {
                     $param = "{$relation}.{$field}";
 
-                    if (!$value = data_get($all, $param)) {
+                    $value = data_get($all, $param);
+
+                    // Skip only when the value is truly absent, not when it is 0/false.
+                    if ($value === null || $value === '') {
                         continue;
                     }
 
@@ -396,25 +399,16 @@ class BaseController extends Controller
 
     protected function isAdmin($request): bool
     {
-        if (!empty($request->loggedUser)) {
-            return $request->loggedUser->role(config('constants.ROLE.admin'));
-        }
-        return false;
+        return !empty($request->loggedUser) && $request->loggedUser->hasRole('admin');
     }
 
     protected function isUser($request): bool
     {
-        if (!empty($request->loggedUser)) {
-            return $request->loggedUser->role(config('constants.ROLE.user'));
-        }
-        return false;
+        return !empty($request->loggedUser) && $request->loggedUser->hasRole('user');
     }
 
     protected function isGuest($request): bool
     {
-        if (!empty($request->loggedUser)) {
-            return $request->loggedUser->role(config('constants.ROLE.guest'));
-        }
-        return false;
+        return !empty($request->loggedUser) && $request->loggedUser->hasRole('guest');
     } 
 }
