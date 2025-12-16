@@ -37,6 +37,11 @@ class StoreUserRequest extends FormRequest
              * @example password
              */
             'password' => ['required', 'string', 'min:8', 'max:150'],
+            /**
+             * User's role.
+             * @example admin, user
+             */
+            'role' => ['required', 'string', 'in:'.implode(',', config('constants.ROLES'))],
         ];
     }
 }

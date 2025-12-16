@@ -12,9 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias(['auth.jwt' => \App\Http\Middleware\AuthMiddleware::class]);
-        $middleware->alias(['optional.jwt' => \App\Http\Middleware\OptionalMiddleware::class]);
+        $middleware->alias([
+            'auth.jwt' => \App\Http\Middleware\AuthMiddleware::class,
+            'optional.jwt' => \App\Http\Middleware\OptionalMiddleware::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'roles_or_permissions' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        //todo: add exceptions
     })->create();

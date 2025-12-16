@@ -4,5 +4,6 @@ return [
     'ROLES' => [
         'admin',
         'user',
+        'guest',
     ],
 ];

@@ -64,14 +64,6 @@ class BaseController extends Controller
     protected int $status = 400;
 
 
-    protected function isAdmin($request): bool
-    {
-        if (!empty($request->loggedUser)) {
-            return $request->loggedUser->role(config('constants.ROLE.admin'));
-        }
-        return false;
-    }
-
     /**
      * GET /resource
      */
@@ -401,4 +393,28 @@ class BaseController extends Controller
             }
         }
     }
+
+    protected function isAdmin($request): bool
+    {
+        if (!empty($request->loggedUser)) {
+            return $request->loggedUser->role(config('constants.ROLE.admin'));
+        }
+        return false;
+    }
+
+    protected function isUser($request): bool
+    {
+        if (!empty($request->loggedUser)) {
+            return $request->loggedUser->role(config('constants.ROLE.user'));
+        }
+        return false;
+    }
+
+    protected function isGuest($request): bool
+    {
+        if (!empty($request->loggedUser)) {
+            return $request->loggedUser->role(config('constants.ROLE.guest'));
+        }
+        return false;
+    } 
 }
