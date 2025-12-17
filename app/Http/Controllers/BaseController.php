@@ -63,6 +63,7 @@ class BaseController extends Controller
     protected array $result = [];
     protected int $status = 400;
 
+
     /**
      * GET /resource
      */
@@ -159,12 +160,16 @@ class BaseController extends Controller
      */
     protected function applyRelationFilters(FormRequest $request, $query): void
     {
+        $all = $request->all();
+
         foreach ($this->relationFilters ?? [] as $operation => $relations) {
             foreach ($relations as $relation => $fields) {
                 foreach ($fields as $field) {
                     $param = "{$relation}.{$field}";
-                    $value = data_get($request->all(), $param);
 
+                    $value = data_get($all, $param);
+
+                    // Skip only when the value is truly absent, not when it is 0/false.
                     if ($value === null || $value === '') {
                         continue;
                     }
@@ -390,5 +395,25 @@ class BaseController extends Controller
                 }
             }
         }
+    }
+
+    private function userHasRole(string $role): bool
+    {
+        return !empty(auth()->user()) && auth()->user()->hasRole($role);
+    }
+
+    protected function isAdmin(): bool
+    {
+        return $this->userHasRole('admin');
+    }
+
+    protected function isUser(): bool
+    {
+        return $this->userHasRole('user');
+    }
+
+    protected function isEditor(): bool
+    {
+        return $this->userHasRole('editor');
     }
 }

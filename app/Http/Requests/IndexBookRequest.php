@@ -21,7 +21,7 @@ class IndexBookRequest extends IndexBaseRequest
     {
         return parent::rules() + [
             /**
-                * Book's title.
+             * Book's title.
              * @example The Lord of the Rings
              */
             'title' => ['nullable', 'string', 'max:150'],

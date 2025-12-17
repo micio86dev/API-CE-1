@@ -1,109 +1,190 @@
 <?php
 
-use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\CollectionController;
-use App\Http\Controllers\TypeController;
-use App\Http\Controllers\AddressController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
+namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->name('login')->group(function () {
         Route::post('login', 'login')->name('.login');
     });
-    
-    //protected routes
-    Route::middleware(['auth.jwt'])->group(function () { 
-        Route::controller(AuthController::class)->name('auth')->group(function () {
-            Route::post('logout', 'logout')->name('.logout');
-            Route::post('refresh', 'refresh')->name('.refresh');
-            Route::post('me', 'me')->name('.me');
-        });
+    Route::middleware(['auth.jwt'])->group(function () {
 
-        Route::controller(AuthorController::class)->prefix('authors')->name('authors')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
+        // addresses routes
+        $prefix = 'addresses';
+        Route::controller(AddressController::class)
+            ->prefix($prefix)
+            ->name($prefix)
+            ->group(function () use ($prefix) {
+                Route::get('', 'index')->name('.index')->middleware("permission:$prefix.index");
+                Route::get('{id}', 'show')->name('.show')->middleware("permission:$prefix.show");
+                Route::post('', 'store')->name('.store')->middleware("permission:$prefix.store");
+                Route::put('{id}', 'update')->name('.update')->middleware("permission:$prefix.update");
+                Route::delete('{id}', 'destroy')->name('.destroy')->middleware("permission:$prefix.destroy");
+            });
 
-        Route::controller(CustomerController::class)->prefix('customers')->name('customers')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
+        //authors routes
+        Route::controller(AuthorController::class)
+            ->prefix('authors')
+            ->name('authors')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:authors.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:authors.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:authors.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:authors.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:authors.destroy');
+            });
 
-        Route::controller(LocationController::class)->prefix('locations')->name('locations')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
+        // books routes
+        Route::controller(BookController::class)
+            ->prefix('books')
+            ->name('books')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:books.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:books.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:books.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:books.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:books.destroy');
+            });
+        // addresses routes
+        $prefix = 'books_quantity';
+        Route::controller(BookQuantityController::class)
+            ->prefix($prefix)
+            ->name($prefix)
+            ->group(function () use ($prefix) {
+                Route::patch('', 'moveBooks')->name('.move_books')->middleware("permission:$prefix.move_books");
+                Route::patch('', 'cancelMoveBooks')->name('.cancel_move_books')->middleware("permission:$prefix.move_books");
+            });
 
-        Route::controller(CollectionController::class)->prefix('collections')->name('collections')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
+        // collections routes
+        Route::controller(CollectionController::class)
+            ->prefix('collections')
+            ->name('collections')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:collections.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:collections.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:collections.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:collections.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:collections.destroy');
+            });
 
-        Route::controller(TypeController::class)->prefix('types')->name('types')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
+        // customers routes
+        Route::controller(CustomerController::class)
+            ->prefix('customers')
+            ->name('customers')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:customers.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:customers.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:customers.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:customers.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:customers.destroy');
+            });
 
-        Route::controller(AddressController::class)->prefix('addresses')->name('addresses')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
+        // locations routes
+        Route::controller(LocationController::class)
+            ->prefix('locations')
+            ->name('locations')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:locations.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:locations.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:locations.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:locations.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:locations.destroy');
+            });
 
-        Route::controller(BookController::class)->prefix('books')->name('books')->group(function () {
-            Route::post('', 'store')->name('.store');
-            Route::put('{id}', 'update')->name('.update');
-            Route::delete('{id}', 'destroy')->name('.destroy');
-        });
-    });
+        // types routes
+        Route::controller(TypeController::class)
+            ->prefix('types')
+            ->name('types')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:types.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:types.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:types.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:types.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:types.destroy');
+            });
 
-    Route::controller(AuthorController::class)->prefix('authors')->name('authors')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(CustomerController::class)->prefix('customers')->name('customers')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(LocationController::class)->prefix('location')->name('locations')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(CollectionController::class)->prefix('collection')->name('collections')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(TypeController::class)->prefix('type')->name('types')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(AddressController::class)->prefix('address')->name('addresses')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(BookController::class)->prefix('book')->name('books')->group(function () {
-        Route::get('', 'index')->name('.index');
-        Route::get('{id}', 'show')->name('.show');
-    });
-
-    Route::controller(UserController::class)->prefix('user')->name('users')->group(function () {
-        Route::post('', 'store')->name('.store');
+        // users routes (only admin)
+        Route::controller(UserController::class)
+            ->prefix('users')
+            ->name('users')
+            ->middleware('permission:users.index')
+            ->group(function () {
+                Route::get('', 'index')
+                    ->name('.index')
+                    ->middleware('permission:users.index');
+                Route::get('{id}', 'show')
+                    ->name('.show')
+                    ->middleware('permission:users.show');
+                Route::post('', 'store')
+                    ->name('.store')
+                    ->middleware('permission:users.store');
+                Route::put('{id}', 'update')
+                    ->name('.update')
+                    ->middleware('permission:users.update');
+                Route::delete('{id}', 'destroy')
+                    ->name('.destroy')
+                    ->middleware('permission:users.destroy');
+            });
     });
 });

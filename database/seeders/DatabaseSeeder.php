@@ -4,14 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use app\Models\BaseModel;
+use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder
-{
+{   
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
+        Artisan::call('roles:permissions');
         $this->call([
             TypeSeeder::class,
             CollectionSeeder::class,
@@ -19,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CustomerSeeder::class,
             LocationSeeder::class,
             BookSeeder::class,
+            AdminUserSeeder::class,
         ]);
     }
 }

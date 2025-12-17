@@ -21,7 +21,7 @@ class StoreLocationRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [
+        return [
             /**
              * Location's name.
              * @example Mondadori Store Milano
@@ -48,16 +48,10 @@ class StoreLocationRequest extends FormRequest
              */
             'types' => ['nullable', 'array'],
             'types.*' => ['integer', 'exists:types,id'],
-
-        ];
-      
-
-        $addressRules = StoreAddressRequest::prefixedRules('address');
-
-        return array_merge($rules, $addressRules);
+        ] + StoreAddressRequest::prefixedRules('address');
     }
 
-    
+
 
     public function messages(): array
     {

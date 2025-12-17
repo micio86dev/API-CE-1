@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
 
-class AuthMiddleware
+class OptionalMiddleware
 {
 
     public function handle(Request $request, Closure $next): Response
     {
         try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['error' => __('auth/validation.user_not_found')], 404);
+                return $next($request);
             } else {
                 Auth::guard('api')->setUser($user);
             }
@@ -29,7 +29,7 @@ class AuthMiddleware
 
                 return $next($request)->header('X-Refresh-Token', $newToken);
             } else {
-                return response()->json(['error' => __('auth/validation.token_not_found')], 401);
+                return $next($request);
             }
         }
 

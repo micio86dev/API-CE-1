@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Http\Controllers\BaseController;
-use App\Http\Requests\StoreBookRequest;
-use App\Http\Requests\UpdateBookRequest;
-use App\Http\Resources\BookResource;
-use App\Http\Resources\BookDetailResource;
-use Illuminate\Http\JsonResponse;
-use App\Http\Requests\IndexBookRequest;
 
-class BookController extends BaseController
+use App\Http\Requests\IndexQuantityBookRequest;
+use App\Http\Requests\StoreBookQuantityRequest;
+use App\Http\Requests\UpdateBookQuantityRequest;
+use App\Http\Resources\BookQuantityResource;
+use App\Http\Resources\BookQuantityDetailResource;
+
+use Illuminate\Http\JsonResponse;
+
+class BookQuantityController extends BaseController
 {
-    protected string $primaryModel = Book::class;
-    protected ?string $primaryResource = BookResource::class;
-    protected ?string $primaryDetailResource = BookDetailResource::class;
-    protected array $fillableFields = ['title', 'price', 'plot', 'published_at', 'collection_id'];
+    protected string $primaryModel = BookQuantity::class;
+    protected ?string $primaryResource = BookQuantityResource::class;
+    protected ?string $primaryDetailResource = BookQuantityDetailResource::class;
+    protected array $fillableFields = ['book_id', 'quantity', 'location_id'];
     protected array $indexRelations = ['collection', 'authors', 'types'];
     protected array $detailRelations = ['collection', 'authors', 'types', 'locations', 'quantities'];
     protected array $belongsToManyRelations = ['authors', 'types', 'locations'];
@@ -62,7 +64,7 @@ class BookController extends BaseController
     /**
      * Display all books.
      */
-    public function index(IndexBookRequest $request): JsonResponse
+    public function index(IndexBookQuantityRequest $request): JsonResponse
     {
         return parent::baseIndex($request);
     }
@@ -70,7 +72,7 @@ class BookController extends BaseController
     /**
      * Store a new book.
      */
-    public function store(StoreBookRequest $request): JsonResponse
+    public function store(StoreBookQuantityRequest $request): JsonResponse
     {
         return parent::baseStore($request);
     }
@@ -86,7 +88,7 @@ class BookController extends BaseController
     /**
      * Update the specified book.
      */
-    public function update(UpdateBookRequest $request, int $id): JsonResponse
+    public function update(UpdateBookQuantityRequest $request, int $id): JsonResponse
     {
         return parent::baseUpdate($request, $id);
     }
@@ -97,5 +99,23 @@ class BookController extends BaseController
     public function destroy(int $id): JsonResponse
     {
         return parent::baseDestroy($id);
+    }
+
+    /**
+     * Remove the specified book.
+     */
+    public function moveBooks(MoveBooksRequest $request): JsonResponse
+    {
+        // Logic to move books between locations
+        return $this->jsonData();
+    }
+
+    /**
+     * Remove the specified book.
+     */
+    public function cancelMoveBooks(CancelMoveBooksRequest $request): JsonResponse
+    {
+        // Logic to cancel moving books between locations
+        return $this->jsonData();
     }
 }
