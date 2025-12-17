@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
-use App\Http\Controllers\BaseController;
+
+use App\Http\Requests\IndexTypeRequest;
 use App\Http\Requests\StoreTypeRequest;
 use App\Http\Requests\UpdateTypeRequest;
 use App\Http\Resources\TypeDetailResource;
 use App\Http\Resources\TypeResource;
+
 use Illuminate\Http\JsonResponse;
 
 class TypeController extends BaseController
-{   
+{
     protected string $primaryModel = Type::class;
     protected ?string $primaryResource = TypeResource::class;
     protected ?string $primaryDetailResource = TypeDetailResource::class;
@@ -27,12 +29,13 @@ class TypeController extends BaseController
     {
         return ['id', 'name', 'alias', 'created_at', 'updated_at'];
     }
+
     /**
      * Display all types.
      */
-    public function index(): JsonResponse
+    public function index(IndexTypeRequest $request): JsonResponse
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**

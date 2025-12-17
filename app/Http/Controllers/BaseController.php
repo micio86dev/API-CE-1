@@ -397,18 +397,23 @@ class BaseController extends Controller
         }
     }
 
-    protected function isAdmin($request): bool
+    private function userHasRole(string $role): bool
     {
-        return !empty($request->loggedUser) && $request->loggedUser->hasRole('admin');
+        return !empty(auth()->user()) && auth()->user()->hasRole($role);
     }
 
-    protected function isUser($request): bool
+    protected function isAdmin(): bool
     {
-        return !empty($request->loggedUser) && $request->loggedUser->hasRole('user');
+        return $this->userHasRole('admin');
     }
 
-    protected function isGuest($request): bool
+    protected function isUser(): bool
     {
-        return !empty($request->loggedUser) && $request->loggedUser->hasRole('guest');
-    } 
+        return $this->userHasRole('user');
+    }
+
+    protected function isEditor(): bool
+    {
+        return $this->userHasRole('editor');
+    }
 }

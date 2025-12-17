@@ -1,17 +1,8 @@
 <?php
 
-use App\Http\Controllers\AuthorController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\CollectionController;
-use App\Http\Controllers\TypeController;
-use App\Http\Controllers\AddressController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BookController;
-use App\Http\Controllers\UserController;
+namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Route;
-
-
 
 Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->name('login')->group(function () {
@@ -20,25 +11,16 @@ Route::prefix('v1')->group(function () {
     Route::middleware(['auth.jwt'])->group(function () {
 
         // addresses routes
+        $prefix = 'addresses';
         Route::controller(AddressController::class)
-            ->prefix('addresses')
-            ->name('addresses')
-            ->group(function () {
-                Route::get('', 'index')
-                    ->name('.index')
-                    ->middleware('permission:addresses.index');
-                Route::get('{id}', 'show')
-                    ->name('.show')
-                    ->middleware('permission:addresses.show');
-                Route::post('', 'store')
-                    ->name('.store')
-                    ->middleware('permission:addresses.store');
-                Route::put('{id}', 'update')
-                    ->name('.update')
-                    ->middleware('permission:addresses.update');
-                Route::delete('{id}', 'destroy')
-                    ->name('.destroy')
-                    ->middleware('permission:addresses.destroy');
+            ->prefix($prefix)
+            ->name($prefix)
+            ->group(function () use ($prefix) {
+                Route::get('', 'index')->name('.index')->middleware("permission:$prefix.index");
+                Route::get('{id}', 'show')->name('.show')->middleware("permission:$prefix.show");
+                Route::post('', 'store')->name('.store')->middleware("permission:$prefix.store");
+                Route::put('{id}', 'update')->name('.update')->middleware("permission:$prefix.update");
+                Route::delete('{id}', 'destroy')->name('.destroy')->middleware("permission:$prefix.destroy");
             });
 
         //authors routes
@@ -54,7 +36,7 @@ Route::prefix('v1')->group(function () {
                     ->middleware('permission:authors.show');
                 Route::post('', 'store')
                     ->name('.store')
-                        ->middleware('permission:authors.store');
+                    ->middleware('permission:authors.store');
                 Route::put('{id}', 'update')
                     ->name('.update')
                     ->middleware('permission:authors.update');
@@ -83,6 +65,15 @@ Route::prefix('v1')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:books.destroy');
+            });
+        // addresses routes
+        $prefix = 'books_quantity';
+        Route::controller(BookQuantityController::class)
+            ->prefix($prefix)
+            ->name($prefix)
+            ->group(function () use ($prefix) {
+                Route::patch('', 'moveBooks')->name('.move_books')->middleware("permission:$prefix.move_books");
+                Route::patch('', 'cancelMoveBooks')->name('.cancel_move_books')->middleware("permission:$prefix.move_books");
             });
 
         // collections routes
@@ -194,6 +185,6 @@ Route::prefix('v1')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:users.destroy');
-        });
+            });
     });
 });

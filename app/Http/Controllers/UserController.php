@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\IndexUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\BookQuantity;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -36,9 +38,9 @@ class UserController extends BaseController
     /**
      * Display all users.
      */
-    public function index(): JsonResponse
+    public function index(IndexUserRequest $request): JsonResponse
     {
-        return parent::baseIndex();
+        return parent::baseIndex($request);
     }
 
     /**

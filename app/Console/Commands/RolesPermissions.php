@@ -25,22 +25,7 @@ class RolesPermissions extends Command
 
     // Roles/permissions associations
     protected array $permissionsMap = [
-        'admin' => [
-            'addresses.destroy',
-            'authors.destroy',
-            'books.destroy',
-            'collections.destroy',
-            'customers.destroy',
-            'locations.destroy',
-            'types.destroy',
-            'users',
-            'users.index',
-            'users.show',
-            'users.store',
-            'users.update',
-            'users.destroy',
-        ],
-        'user' => [
+        'editor' => [
             'addresses',
             'addresses.index',
             'addresses.show',
@@ -56,6 +41,7 @@ class RolesPermissions extends Command
             'books.show',
             'books.store',
             'books.update',
+            'books_quantity.move_books',
             'collections',
             'collections.index',
             'collections.show',
@@ -77,13 +63,28 @@ class RolesPermissions extends Command
             'types.store',
             'types.update',
         ],
-        'guest' => [
+        'user' => [
+            'addresses',
+            'addresses.index',
+            'addresses.show',
             'authors',
             'authors.index',
             'authors.show',
             'books',
             'books.index',
             'books.show',
+            'collections',
+            'collections.index',
+            'collections.show',
+            'customers',
+            'customers.index',
+            'customers.show',
+            'locations',
+            'locations.index',
+            'locations.show',
+            'types',
+            'types.index',
+            'types.show',
         ],
     ];
 
