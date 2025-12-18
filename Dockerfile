@@ -17,8 +17,8 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chown -R www-data:www-data /var/www
 
 RUN php artisan config:clear
-RUN php artisan migrate
-RUN php artisan db:seed
+RUN php artisan migrate --force
+RUN php artisan db:seed --force
 RUN php artisan cache:clear
 RUN php artisan route:clear
 RUN php artisan view:clear
