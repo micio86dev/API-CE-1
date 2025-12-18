@@ -30,7 +30,9 @@ class AppServiceProvider extends ServiceProvider
                 return Str::startsWith($route->uri, 'api/');
             });
 
-        Gate::define('viewApiDocs', fn() => true);
+        Gate::define('viewApiDocs', function ($user = null) {
+            return true;
+        });
 
         Gate::before(function ($user, string $ability) {
             return $user->hasRole('admin') ? true : null;
