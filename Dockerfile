@@ -1,8 +1,8 @@
 FROM php:8.3-cli
 
-# System deps
+# System dependencies + PostgreSQL dev
 RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev libpng-dev \
+    git unzip libzip-dev libpng-dev libpq-dev \
     && docker-php-ext-install pdo pdo_pgsql zip
 
 # Composer
