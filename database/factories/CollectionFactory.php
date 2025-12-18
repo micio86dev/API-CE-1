@@ -12,7 +12,7 @@ class CollectionFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(2, true),
+            'name' => $this->faker->name(),
             'description' => $this->faker->sentence(),
             'published_at' => $this->faker->optional(0.7)->dateTimeBetween('-5 years', 'now'),
         ];
