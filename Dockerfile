@@ -16,12 +16,6 @@ RUN composer install --no-dev --optimize-autoloader
 
 RUN chown -R www-data:www-data /var/www
 
-RUN php artisan config:clear
-RUN php artisan cache:clear
-RUN php artisan route:clear
-RUN php artisan view:clear
-RUN php artisan roles:permissions
-RUN php artisan permission:cache-reset
 
 EXPOSE 8000
 
@@ -29,4 +23,8 @@ CMD php artisan migrate --force \
     && php artisan db:seed || true \
     && php artisan roles:permissions \
     && php artisan permission:cache-reset \
+    && php artisan config:clear \
+    && php artisan cache:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
     && php artisan serve --host=0.0.0.0 --port=${PORT:-8000}
