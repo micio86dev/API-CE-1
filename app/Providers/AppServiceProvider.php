@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::define('viewApiDocs', fn() => true);
 
+        Scramble::routes([
+            'docs' => true,    // default: false in production
+        ]);
+
         Gate::before(function ($user, string $ability) {
             return $user->hasRole('admin') ? true : null;
         });
