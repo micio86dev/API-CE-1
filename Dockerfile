@@ -20,7 +20,7 @@ RUN chown -R www-data:www-data /var/www
 EXPOSE 8000
 
 CMD php artisan migrate --force \
-    && php artisan db:seed || true \
+    && php artisan db:seed \
     && php artisan roles:permissions \
     && php artisan permission:cache-reset \
     && php artisan config:clear \
