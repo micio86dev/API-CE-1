@@ -40,4 +40,16 @@ class StoreAuthorRequest extends FormRequest
             'books.*' => ['integer', 'exists:books,id'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'first_name.required' => __('authors/validation.first_name.required'),
+            'first_name.max' => __('authors/validation.first_name.max'),
+            'last_name.required' => __('authors/validation.last_name.required'),
+            'last_name.max' => __('authors/validation.last_name.max'),
+            'books.array' => __('authors/validation.books.array'),
+            'books.*.exists' => __('authors/validation.books.*.exists'),
+        ];
+    }
 }

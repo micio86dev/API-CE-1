@@ -11,7 +11,7 @@ class StoreAddressRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -56,12 +56,12 @@ class StoreAddressRequest extends FormRequest
              * Address's latitude.
              * @example 45.4642
              */
-            'lat' => ['required', 'numeric'],
+            'lat' => ['nullable', 'numeric'],
             /**
              * Address's longitude.
              * @example 9.1914
              */
-            'lng' => ['required', 'numeric'],
+            'lng' => ['nullable', 'numeric'],
         ];
     }
 

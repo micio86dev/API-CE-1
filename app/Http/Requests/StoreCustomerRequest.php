@@ -11,7 +11,7 @@ class StoreCustomerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,6 +32,16 @@ class StoreCustomerRequest extends FormRequest
              * @example y/n
              */
             'mine' => ['required', 'string', 'in:y,n', 'default:n'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => __('customers/validation.name.required'),
+            'name.max' => __('customers/validation.name.max'),
+            'mine.required' => __('customers/validation.mine.required'),
+            'mine.in' => __('customers/validation.mine.in'),
         ];
     }
 }
