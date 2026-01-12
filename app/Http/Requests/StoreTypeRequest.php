@@ -15,10 +15,20 @@ class StoreTypeRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Prepare the data for validation.
      */
+    public function prepareForValidation(): void
+    {
+        $name = $this->request->get('name');
+        $alias = $this->request->get('alias');
+        if (!$alias || $alias === '') {
+            $alias = mb_strtolower($name, 'UTF-8');
+        }
+        $this->merge([
+            'alias' => $alias,
+        ]);
+    }
+
     public function rules(): array
     {
         return [
@@ -31,7 +41,17 @@ class StoreTypeRequest extends FormRequest
              * Type's alias.
              * @example shop/fantasy/etc..
              */
-            'name' => ['required', 'string', 'max:60'],
+            'alias' => ['required', 'string', 'max:60', 'unique:types,alias'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => __('types/validation.name.required'),
+            'name.max' => __('types/validation.name.max'),
+            'alias.required' => __('types/validation.alias.required'),
+            'alias.max' => __('types/validation.alias.max'),
         ];
     }
 }

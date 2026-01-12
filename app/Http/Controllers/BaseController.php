@@ -43,7 +43,7 @@ class BaseController extends Controller
      */
     protected array $belongsToManyRelations = [];
 
-    protected array $searcheableFields = [];
+    protected array $searchableFields = [];
 
     /**
      * hasMany relations.

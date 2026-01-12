@@ -26,12 +26,12 @@ class UpdateTypeRequest extends FormRequest
              * Type's name.
              * @example Shop/Fantasy/etc..
              */
-            'name' => ['sometimes', 'string', 'max:60'],
+            'name' => ['required', 'string', 'max:60'],
             /**
              * Type's alias.
              * @example shop/fantasy/etc..
              */
-            'name' => ['sometimes', 'string', 'max:60'],
+            'alias' => ['required', 'string', 'max:60'],
         ];
     }
 }

@@ -13,87 +13,41 @@ class UpdateLocationRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            /**
-             * Location's name.
-             * @example Mondadori Store Milano
-             */
-            'name' => 'sometimes|string|max:255',
-            /**
-             * Location's phone number.
-             * @example 02/1324567
-             */
-            'phone_number' => 'nullable|string|max:50',
-            /**
-             * Location's email.
-             * @example email@email.com
-             */
-            'email' => 'nullable|email|max:255',
-            /**
-             * Customer's Location.
-             * @example 1
-             */
-            'customer_id' => 'sometimes|exists:customers,id',
-            
-            'address' => 'nullable|array',
-            /**
-             * Location's city.
-             * @example Milan
-             */
-            'address.city' => 'required_with:address|string|max:255',
-            /**
-             * Location's Province.
-             * @example MI
-             */
-            'address.province' => 'nullable|string|max:100',
-            /**
-             * Location's country.
-             * @example Italy
-             */
-            'address.country' => 'required_with:address|string|max:100',
-            /**
-             * Location's street.
-             * @example Corso Italia
-             */
-            'address.street' => 'required_with:address|string|max:255',
-            /**
-             * Location's street number.
-             * @example 10
-             */
-            'address.street_number' => 'nullable|string|max:50',
-            /**
-             * Location's postal code.
-             * @example 20131
-             */
-            'address.zip' => 'nullable|string|max:20',
-            /**
-             * Location's latitude.
-             * @example 40.7128° N
-             */
-            'address.lat' => 'nullable|numeric|between:-90,90',
-            /**
-             * Location's longitude.
-             * @example 2° 29' E
-             */
-            'address.lng' => 'nullable|numeric|between:-180,180',
-            /**
-             * Location's type.
-             * @example shop
-             */
-            'types' => 'nullable|array',
-            'types.*' => 'exists:types,id',
-            
+        $rules = [
+            'name' => ['sometimes', 'string', 'max:255'],
+            'phone_number' => ['sometimes', 'string', 'min:8', 'max:15', 'unique:locations,phone_number'],
+            'email' => ['sometimes', 'email', 'max:70', 'unique:locations,email'],
+            'customer_id' => ['sometimes', 'exists:customers,id'],
+            'types' => ['sometimes', 'array'],
+            'types.*' => ['integer', 'exists:types,id'],
+            'address' => ['sometimes', 'array'],
         ];
+
+        $addressRules = UpdateAddressRequest::prefixedRules('address');
+
+        return array_merge($rules, $addressRules);
     }
 
     public function messages(): array
     {
-        return [
-            'address.city.required_with' => 'City is required when providing an address.',
-            'address.street.required_with' => 'Street is required when providing an address.',
-            'address.country.required_with' => 'Country is required when providing an address.',
-            'address.lat.between' => 'Latitude must be between -90 and 90.',
-            'address.lng.between' => 'Longitude must be between -180 and 180.',
+        $messages = [
+            'name.string' => __('locations/validation.name.string'),
+            'name.max' => __('locations/validation.name.max'),
+            'phone_number.string' => __('locations/validation.phone_number.string'),
+            'phone_number.max' => __('locations/validation.phone_number.max'),
+            'phone_number.min' => __('locations/validation.phone_number.min'),
+            'phone_number.unique' => __('locations/validation.phone_number.unique'),
+            'email.email' => __('locations/validation.email.email'),
+            'email.max' => __('locations/validation.email.max'),
+            'email.unique' => __('locations/validation.email.unique'),
+            'phone_number.unique' => __('locations/validation.phone_number.unique'),
+            'customer_id.exists' => __('locations/validation.customer_id.exists'),
+            'types.array' => __('locations/validation.types.array'),
+            'types.*.integer' => __('locations/validation.types.*.integer'),
         ];
+
+        $addressMessages = UpdateAddressRequest::prefixedMessages('address');
+
+        return array_merge($messages, $addressMessages);
     }
 }

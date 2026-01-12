@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\IndexCollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Http\Resources\CollectionDetailResource;
+use App\Http\Requests\UpdateCollectionRequest;
 
 class CollectionController extends BaseController
 {   
@@ -18,7 +19,7 @@ class CollectionController extends BaseController
     protected array $indexRelations = ['books'];
     protected array $detailRelations = ['books'];
     protected array $belongsToManyRelations = [];
-    protected array $hasManyRelations = ['books'];
+    protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
     protected array $morphOneRelations = [];
     protected array $searchableFields = [
@@ -71,7 +72,7 @@ class CollectionController extends BaseController
     /**
      * Update the specified collection.
      */
-    public function update(Request $request, int $collection_id): JsonResponse
+    public function update(UpdateCollectionRequest $request, int $collection_id): JsonResponse
     {
         return parent::baseUpdate($request, $collection_id);
     }

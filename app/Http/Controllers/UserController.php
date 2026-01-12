@@ -19,8 +19,13 @@ class UserController extends BaseController
 {
 
     protected string $primaryModel = User::class;
+<<<<<<< HEAD
     protected ?string $primaryResource = null; //ToDo: create UserResource
     protected ?string $primaryDetailResource = null; //ToDo: create UserDetailResource
+=======
+    protected ?string $primaryResource = UserResource::class;
+    protected ?string $primaryDetailResource = null;
+>>>>>>> feature/translations
     protected array $fillableFields = ['name', 'email', 'password'];
     protected array $indexRelations = [];
     protected array $detailRelations = [];
