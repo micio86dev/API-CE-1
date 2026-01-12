@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,29 +26,27 @@ class StoreUserRequest extends FormRequest
              * User's name.
              * @example User
              */
-            'name' => ['required', 'string', 'max:150'],
+            'name' => ['sometimes', 'string', 'max:150'],
             /**
              * User's email.
              * @example user@email.com
              */
-            'email' => ['required', 'email', 'max:150'],
+            'email' => ['sometimes', 'email', 'max:150'],
             /**
              * User's password (min 8 characters).
              * @example password
              */
-            'password' => ['required', 'string', 'min:8', 'max:150'],
+            'password' => ['sometimes', 'string', 'min:8', 'max:150'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'name.required' => __('users/validation.name.required'),
+            'name.string' => __('users/validation.name.string'),
             'name.max' => __('users/validation.name.max'),
-            'email.required' => __('users/validation.email.required'),
             'email.email' => __('users/validation.email.email'),
             'email.max' => __('users/validation.email.max'),
-            'password.required' => __('users/validation.password.required'),
             'password.string' => __('users/validation.password.string'),
             'password.min' => __('users/validation.password.min'),
             'password.max' => __('users/validation.password.max'),

@@ -4,16 +4,8 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreLocationRequest extends FormRequest
+class StoreLocationRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -31,12 +23,12 @@ class StoreLocationRequest extends FormRequest
              * Location's phone number.
              * @example 02/1324567
              */
-            'phone_number' => ['nullable', 'string', 'max:50'],
+            'phone_number' => ['nullable', 'numeric', 'min:8', 'max:15', 'unique:locations,phone_number'],
             /**
              * Location's email.
              * @example email@email.com
              */
-            'email' => ['nullable', 'email', 'max:255'],
+            'email' => ['nullable', 'email', 'max:70', 'unique:locations,email'],
             /**
              * Customer's Location.
              * @example 1
@@ -49,6 +41,7 @@ class StoreLocationRequest extends FormRequest
             'types' => ['nullable', 'array'],
             'types.*' => ['integer', 'exists:types,id'],
 
+            'address' => ['required', 'array'],
         ];
       
 
@@ -61,8 +54,20 @@ class StoreLocationRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            // TODO: Add messages
+        $messages = [
+            'name.required' => __('locations/validation.name.required'),
+            'name.max' => __('locations/validation.name.max'),
+            'phone_number.max' => __('locations/validation.phone_number.max'),
+            'email.email' => __('locations/validation.email.email'),
+            'email.max' => __('locations/validation.email.max'),
+            'customer_id.required' => __('locations/validation.customer_id.required'),
+            'customer_id.exists' => __('locations/validation.customer_id.exists'),
+            'types.array' => __('locations/validation.types.array'),
+            'types.*.integer' => __('locations/validation.types.*.integer'),
         ];
+
+        $addressMessages = StoreAddressRequest::prefixedMessages('address');
+
+        return array_merge($messages, $addressMessages);
     }
 }

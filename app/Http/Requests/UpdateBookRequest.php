@@ -26,7 +26,7 @@ class UpdateBookRequest extends FormRequest
              * Title for a book.
              * @example The Lord of the Rings
              */
-            'title' => ['sometimes', 'string', 'max:150'],
+            'title' => ['required', 'string', 'max:150'],
             /**
              * Book's price.
              * @example 9.99
@@ -90,14 +90,20 @@ class UpdateBookRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.max' => 'The book title cannot exceed 150 characters.',
-            'price.decimal' => 'The price must have at most 2 decimal places.',
-            'price.max' => 'The price cannot exceed 999.99.',
-            'collection_id.exists' => 'The selected collection does not exist.',
-            'authors.array' => 'Authors must be provided as an array.',
-            'authors.*.exists' => 'One or more selected authors do not exist.',
-            'types.array' => 'Types must be provided as an array.',
-            'types.*.exists' => 'One or more selected literary genres do not exist.',
+            'title.required' => __('books/validation.title.required'),
+            'title.string' => __('books/validation.title.string'),
+            'title.max' => __('books/validation.title.max'),
+            'price.numeric' => __('books/validation.price.numeric'),
+            'price.decimal' => __('books/validation.price.decimal'),
+            'price.max' => __('books/validation.price.max'),
+            'price.min' => __('books/validation.price.min'),
+            'collection_id.exists' => __('books/validation.collection_id.exists'),
+            'authors.array' => __('books/validation.authors.array'),
+            'authors.*.exists' => __('books/validation.authors.*.exists'),
+            'types.array' => __('books/validation.types.array'),
+            'types.*.exists' => __('books/validation.types.*.exists'),
+            'published_at.date' => __('books/validation.published_at.date'),
+            'published_at.date_format' => __('books/validation.published_at.date_format'),
         ];
     }
 }

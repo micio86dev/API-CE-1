@@ -22,7 +22,26 @@ class UpdateCustomerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            /**
+             * Customer's name.
+             * @example Feltrinelli S.p.A.
+             */
+            'name' => ['required', 'string', 'max:150'],
+            /**
+             * Customer's mine.
+             * @example y/n
+             */
+            'mine' => ['sometimes', 'string', 'in:y,n', 'default:n'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => __('customers/validation.name.required'),
+            'name.max' => __('customers/validation.name.max'),
+            'name.string' => __('customers/validation.name.string'),
+            'mine.in' => __('customers/validation.mine.in'),
         ];
     }
 }

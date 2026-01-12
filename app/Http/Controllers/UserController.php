@@ -13,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 class UserController extends BaseController
 {
     protected string $primaryModel = User::class;
-    protected ?string $primaryResource = null; //ToDo: create UserResource
+    protected ?string $primaryResource = UserResource::class;
     protected ?string $primaryDetailResource = null;
     protected array $fillableFields = ['name', 'email', 'password'];
     protected array $indexRelations = [];

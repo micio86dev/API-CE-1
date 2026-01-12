@@ -20,7 +20,7 @@ class LocationController extends BaseController
     protected array $fillableFields = ['name', 'phone_number', 'email', 'customer_id'];
     protected array $indexRelations = ['customer', 'address', 'types'];
     protected array $detailRelations = ['customer', 'address', 'types', 'books'];
-    protected array $belongsToManyRelations = ['books'];
+    protected array $belongsToManyRelations = ['books', 'types'];
     protected array $hasManyRelations = [];
     protected array $hasOneRelations = [];
     protected array $morphOneRelations = ['address'];

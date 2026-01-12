@@ -46,7 +46,9 @@ class StoreAuthorRequest extends FormRequest
         return [
             'first_name.required' => __('authors/validation.first_name.required'),
             'first_name.max' => __('authors/validation.first_name.max'),
+            'first_name.string' => __('authors/validation.first_name.string'),
             'last_name.required' => __('authors/validation.last_name.required'),
+            'last_name.string' => __('authors/validation.last_name.string'),
             'last_name.max' => __('authors/validation.last_name.max'),
             'books.array' => __('authors/validation.books.array'),
             'books.*.exists' => __('authors/validation.books.*.exists'),
