@@ -23,7 +23,7 @@ class StoreLocationRequest extends BaseRequest
              * Location's phone number.
              * @example 02/1324567
              */
-            'phone_number' => ['nullable', 'numeric', 'min:8', 'max:15', 'unique:locations,phone_number'],
+            'phone_number' => ['required', 'string', 'min:8', 'max:15', 'unique:locations,phone_number'],
             /**
              * Location's email.
              * @example email@email.com
