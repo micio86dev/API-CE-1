@@ -3,29 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Spatie\Permission\Models\Role;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\IndexUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\BookQuantity;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
-//ToDo: create All Requests
 
 class UserController extends BaseController
 {
 
     protected string $primaryModel = User::class;
-<<<<<<< HEAD
-    protected ?string $primaryResource = null; //ToDo: create UserResource
-    protected ?string $primaryDetailResource = null; //ToDo: create UserDetailResource
-=======
     protected ?string $primaryResource = UserResource::class;
     protected ?string $primaryDetailResource = null;
->>>>>>> feature/translations
     protected array $fillableFields = ['name', 'email', 'password'];
     protected array $indexRelations = [];
     protected array $detailRelations = [];
@@ -83,7 +74,7 @@ class UserController extends BaseController
     /**
      * Update the specified user.
      */
-    public function update($request, int $id): JsonResponse
+    public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
         return parent::baseUpdate($request, $id);
     }

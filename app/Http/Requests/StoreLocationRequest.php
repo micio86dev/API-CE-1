@@ -40,9 +40,6 @@ class StoreLocationRequest extends BaseRequest
              */
             'types' => ['nullable', 'array'],
             'types.*' => ['integer', 'exists:types,id'],
-<<<<<<< HEAD
-        ] + StoreAddressRequest::prefixedRules('address');
-=======
 
             'address' => ['required', 'array'],
         ];
@@ -51,7 +48,6 @@ class StoreLocationRequest extends BaseRequest
         $addressRules = StoreAddressRequest::prefixedRules('address');
 
         return array_merge($rules, $addressRules);
->>>>>>> feature/translations
     }
 
 
