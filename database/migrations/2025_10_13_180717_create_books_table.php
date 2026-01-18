@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 150);
+            $table->json('title');
             $table->decimal('price', 5, 2)->nullable();
-            $table->text('plot')->nullable();
+            $table->json('plot')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->foreignId('collection_id')->nullable()->constrained('collections');
             $table->softDeletes();

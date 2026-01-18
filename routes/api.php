@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('set.lang')->group(function () {
     Route::controller(AuthController::class)->name('login')->group(function () {
         Route::post('login', 'login')->name('.login');
     });

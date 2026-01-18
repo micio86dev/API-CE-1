@@ -2,27 +2,28 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Type;
-use app\Models\BaseModel;
+use Illuminate\Database\Seeder;
 
 class TypeSeeder extends Seeder
 {
     public function run(): void
     {
         $types = [
-            ['name' => 'Fantasy', 'alias' => 'fantasy'],
-            ['name' => 'Giallo', 'alias' => 'giallo'],
-            ['name' => 'Saggistica', 'alias' => 'saggistica'],
-            ['name' => 'Romance', 'alias' => 'romance'],
-            ['name' => 'Horror', 'alias' => 'horror'],
-            ['name' => 'Thriller', 'alias' => 'thriller'],
-            ['name' => 'Sci-Fi', 'alias' => 'sci-fi'],
-            ['name' => 'Biografico', 'alias' => 'biografico'],
-            ['name' => 'Shop', 'alias' => 'shop'],
-            ['name' => 'Warehouse', 'alias' => 'warehouse'],
-            ['name' => 'Publisher', 'alias' => 'publisher'],
-            ['name' => 'Headquarters', 'alias' => 'headquarters'],
+            ['name' => ['it' => 'Fantasy', 'en' => 'Fantasy'], 'alias' => 'fantasy'],
+            ['name' => ['it' => 'Giallo', 'en' => 'Mystery'], 'alias' => 'giallo'],
+            ['name' => ['it' => 'Saggistica', 'en' => 'Non-fiction'], 'alias' => 'saggistica'],
+            ['name' => ['it' => 'Romance', 'en' => 'Romance'], 'alias' => 'romance'],
+            ['name' => ['it' => 'Horror', 'en' => 'Horror'], 'alias' => 'horror'],
+            ['name' => ['it' => 'Thriller', 'en' => 'Thriller'], 'alias' => 'thriller'],
+            ['name' => ['it' => 'Sci-Fi', 'en' => 'Sci-Fi'], 'alias' => 'sci-fi'],
+            ['name' => ['it' => 'Biografico', 'en' => 'Biography'], 'alias' => 'biografico'],
+
+            // Location/customer types you already had
+            ['name' => ['it' => 'Negozio', 'en' => 'Shop'], 'alias' => 'shop'],
+            ['name' => ['it' => 'Magazzino', 'en' => 'Warehouse'], 'alias' => 'warehouse'],
+            ['name' => ['it' => 'Editore', 'en' => 'Publisher'], 'alias' => 'publisher'],
+            ['name' => ['it' => 'Sede centrale', 'en' => 'Headquarters'], 'alias' => 'headquarters'],
         ];
 
         foreach ($types as $type) {

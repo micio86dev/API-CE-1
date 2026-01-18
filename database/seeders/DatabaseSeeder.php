@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use app\Models\BaseModel;
 use Illuminate\Support\Facades\Artisan;
 
 class DatabaseSeeder extends Seeder

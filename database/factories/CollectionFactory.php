@@ -11,10 +11,19 @@ class CollectionFactory extends Factory
 
     public function definition(): array
     {
+        $fakerIt = \Faker\Factory::create('it_IT');
+        $fakerEn = \Faker\Factory::create('en_US');
+
+        $descIt = $fakerIt->optional(0.7)->sentence();
+        $descEn = $descIt ? $fakerEn->sentence() : null;
+
         return [
-            'name' => $this->faker->words(2, true),
-            'description' => $this->faker->sentence(),
-            'published_at' => $this->faker->optional(0.7)->dateTimeBetween('-5 years', 'now'),
+            'name' => [
+                'it' => $fakerIt->words(2, true),
+                'en' => $fakerEn->words(2, true),
+            ],
+            'description' => $descIt ? ['it' => $descIt, 'en' => $descEn] : null,
+            'published_at' => $fakerIt->optional(0.7)->dateTimeBetween('-5 years', 'now'),
         ];
     }
 }

@@ -18,9 +18,7 @@ class Book extends BaseModel
 
     protected $casts = [
         'id' => 'integer',
-        'title' => 'string',
         'price' => 'decimal:2',
-        'plot' => 'string',
         'published_at' => 'datetime',
         'collection_id' => 'integer',
         'total_quantity' => 'integer',
@@ -29,6 +27,8 @@ class Book extends BaseModel
     protected $appends = [
         'total_quantity'
     ];
+
+    public $translatable = ['title', 'plot'];
 
     public function collection()
     {

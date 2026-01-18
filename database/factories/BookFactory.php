@@ -12,11 +12,20 @@ class BookFactory extends Factory
 
     public function definition(): array
     {
+        $fakerIt = \Faker\Factory::create('it_IT');
+        $fakerEn = \Faker\Factory::create('en_US');
+
+        $plotIt = $fakerIt->optional(0.9)->paragraph(3);
+        $plotEn = $plotIt ? $fakerEn->paragraph(3) : null;
+
         return [
-            'title' => $this->faker->sentence(rand(2, 5)),
-            'price' => $this->faker->randomFloat(2, 5, 50),
-            'plot' => $this->faker->optional(0.9)->paragraph(3),
-            'published_at' => $this->faker->dateTimeBetween('-50 years', '-1 year'),
+            'title' => [
+                'it' => $fakerIt->sentence($fakerIt->numberBetween(2, 5)),
+                'en' => $fakerEn->sentence($fakerEn->numberBetween(2, 5)),
+            ],
+            'price' => $fakerIt->randomFloat(2, 5, 50),
+            'plot' => $plotIt ? ['it' => $plotIt, 'en' => $plotEn] : null,
+            'published_at' => $fakerIt->dateTimeBetween('-50 years', '-1 year'),
             'collection_id' => Collection::factory(),
         ];
     }
