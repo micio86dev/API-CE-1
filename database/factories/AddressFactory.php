@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Factories;
+
 use App\Models\Address;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -12,7 +14,7 @@ class AddressFactory extends Factory
         $cities = ['Milano', 'Roma', 'Torino', 'Bologna', 'Firenze', 'Napoli', 'Venezia', 'Genova'];
         $provinces = ['MI', 'RM', 'TO', 'BO', 'FI', 'NA', 'VE', 'GE'];
         
-        $index = $this->faker->numberBetween(0, count($cities) - 1);
+        $index = $this->faker->numberBetween(0, 7);
         
         return [
             'city' => $cities[$index],
@@ -20,7 +22,8 @@ class AddressFactory extends Factory
             'country' => 'Italia',
             'street' => 'Via ' . $this->faker->streetName(),
             'street_number' => $this->faker->buildingNumber(),
-            'zip' => $this->faker->postcode(),
+            // CAP (Italy) is 5 digits; column is zip(7)
+            'zip' => $this->faker->numerify('#####'),
             'lat' => $this->faker->latitude(36, 47),
             'lng' => $this->faker->longitude(6, 18),
         ];

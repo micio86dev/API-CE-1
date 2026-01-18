@@ -13,6 +13,8 @@ class Type extends BaseModel
 
     protected $fillable = ['name', 'alias'];
 
+    public $translatable = ['name'];
+
     public function books()
     {
         return $this->morphedByMany(Book::class, 'model', 'has_types');

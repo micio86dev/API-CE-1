@@ -6,7 +6,6 @@ use Illuminate\Database\Seeder;
 use App\Models\Location;
 use App\Models\Customer;
 use App\Models\Type;
-use app\Models\BaseModel;
 
 class LocationSeeder extends Seeder
 {
@@ -19,7 +18,7 @@ class LocationSeeder extends Seeder
 
         // Crea 3-5 locations per ogni customer
         foreach ($customers as $customer) {
-            $numLocations = rand(2, 5);
+            $numLocations = fake()->numberBetween(2, 5);
             
             for ($i = 0; $i < $numLocations; $i++) {
                 $location = Location::factory()->create([
@@ -34,7 +33,8 @@ class LocationSeeder extends Seeder
                     'country' => 'Italia',
                     'street' => 'Via ' . fake()->streetName(),
                     'street_number' => fake()->buildingNumber(),
-                    'zip' => fake()->postcode(),
+                    // CAP (Italy) is 5 digits; column is zip(7)
+                    'zip' => fake()->numerify('#####'),
                     'lat' => fake()->latitude(36, 47),
                     'lng' => fake()->longitude(6, 18),
                 ]);

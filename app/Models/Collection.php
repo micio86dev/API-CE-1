@@ -17,13 +17,13 @@ class Collection extends BaseModel
 
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string',
-        'description' => 'string',
         'published_at' => 'datetime',
     ];
 
     public function books(){
         return $this->hasMany(Book::class);
     }
+
+    public $translatable = ['name', 'description'];
 }
 

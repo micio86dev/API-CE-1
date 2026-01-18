@@ -14,16 +14,10 @@ class BookDetailResource extends JsonResource
             'price' => $this->price,
             'plot' => $this->plot,
             'publishedAt' => $this->published_at,
-            'types' => TypeResource::collection($this->whenLoaded('types')),
-
-            'collection' => $this->collection, // CollectionResource ToDo
-
+            'collection' => new CollectionResource($this->whenLoaded('collection')),
             'authors' => AuthorResource::collection($this->whenLoaded('authors')),
-
+            'types' => TypeResource::collection($this->whenLoaded('types')),
             'locations' => LocationResource::collection($this->whenLoaded('locations')),
-
-
-
         ];
     }
 }

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('collections', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 150);
-            $table->string('description', 255)->nullable();
+            $table->json('name');
+            $table->json('description')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
