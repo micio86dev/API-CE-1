@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\IndexCollectionRequest;
 use App\Http\Resources\CollectionResource;
 use App\Http\Resources\CollectionDetailResource;
+use App\Http\Requests\StoreCollectionRequest;
 use App\Http\Requests\UpdateCollectionRequest;
 
 class CollectionController extends BaseController
@@ -56,7 +57,7 @@ class CollectionController extends BaseController
     /**
      * Store a new collection.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreCollectionRequest $request): JsonResponse
     {
         return parent::baseStore($request);
     }
@@ -72,9 +73,9 @@ class CollectionController extends BaseController
     /**
      * Update the specified collection.
      */
-    public function update(UpdateCollectionRequest $request, int $collection_id): JsonResponse
+    public function update(UpdateCollectionRequest $request, int $id): JsonResponse
     {
-        return parent::baseUpdate($request, $collection_id);
+        return parent::baseUpdate($request, $id);
     }
 
     /**

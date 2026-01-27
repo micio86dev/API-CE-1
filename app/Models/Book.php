@@ -45,6 +45,11 @@ class Book extends BaseModel
         return $this->morphToMany(Type::class, 'model', 'has_types');
     }
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'model');
+    }
+
     public function quantities()
     {
         return $this->hasMany(BookQuantity::class);

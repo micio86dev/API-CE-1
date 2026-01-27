@@ -24,4 +24,9 @@ class Type extends BaseModel
     {
         return $this->morphedByMany(Location::class, 'model', 'has_types');
     }
+
+    public function images()
+    {
+        return $this->morphedByMany(Image::class, 'model', 'has_types');
+    }
 }

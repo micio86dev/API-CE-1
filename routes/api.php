@@ -9,6 +9,8 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
         Route::post('login', 'login')->name('.login');
     });
     Route::middleware(['auth.jwt'])->group(function () {
+        // generic images upload (upload first, attach later)
+        Route::post('images', [ImageController::class, 'store'])->name('images.store');
 
         // addresses routes
         $prefix = 'addresses';
@@ -43,8 +45,11 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:authors.destroy');
+                Route::post('{id}/images', [ImageController::class, 'storeForAuthor'])
+                    ->name('.store_image')
+                    ->middleware("permission:authors.store");
             });
-
+            
         // books routes
         Route::controller(BookController::class)
             ->prefix('books')
@@ -65,6 +70,9 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:books.destroy');
+                Route::post('{id}/images', [ImageController::class, 'storeForBook'])
+                    ->name('.store_image')
+                    ->middleware("permission:books.store");
             });
         // addresses routes
         $prefix = 'books_quantity';
@@ -118,6 +126,9 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:customers.destroy');
+                Route::post('{id}/images', [ImageController::class, 'storeForCustomer'])
+                    ->name('.store_image')
+                    ->middleware("permission:customers.store");
             });
 
         // locations routes
@@ -140,6 +151,9 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:locations.destroy');
+                Route::post('{id}/images', [ImageController::class, 'storeForLocation'])
+                    ->name('.store_image')
+                    ->middleware("permission:locations.store");
             });
 
         // types routes

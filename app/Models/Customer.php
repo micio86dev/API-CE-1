@@ -18,4 +18,9 @@ class Customer extends BaseModel
     {
         return $this->hasMany(Location::class);
     }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'model');
+    }
 }

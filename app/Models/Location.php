@@ -33,6 +33,11 @@ class Location extends BaseModel
         return $this->morphToMany(Type::class, 'model', 'has_types');
     }
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'model');
+    }
+
     public function booksQuantity()
     {
         return $this->hasMany(BookQuantity::class);

@@ -19,6 +19,11 @@ class Author extends BaseModel
         return $this->belongsToMany(Book::class, 'authors_books');
     }
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'model');
+    }
+
     public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";

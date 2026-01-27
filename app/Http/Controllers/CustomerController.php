@@ -9,6 +9,8 @@ use Illuminate\Http\JsonResponse;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\CustomerDetailResource;
 use App\Http\Requests\IndexCustomerRequest;
+use App\Http\Requests\StoreCustomerRequest;
+use App\Http\Requests\UpdateCustomerRequest;
 
 class CustomerController extends BaseController
 {   
@@ -60,7 +62,7 @@ class CustomerController extends BaseController
     /**
      * Store a new customer.
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreCustomerRequest $request): JsonResponse
     {
         return parent::baseStore($request);
     }
@@ -75,7 +77,7 @@ class CustomerController extends BaseController
     /**
      * Update the specified customer.
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(UpdateCustomerRequest $request, int $id): JsonResponse
     {
         return parent::baseUpdate($request, $id);
     }
