@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.jwt' => \App\Http\Middleware\AuthMiddleware::class,
             'optional.jwt' => \App\Http\Middleware\OptionalMiddleware::class,
+            'audit.log' => \App\Http\Middleware\AuditLogMiddleware::class,
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'roles_or_permissions' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,

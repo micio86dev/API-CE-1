@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Middleware;
 
 use App\Models\AuditLog;
@@ -63,7 +64,7 @@ class AuditLogMiddleware
 
                 'duration_ms' => (int) round((microtime(true) - $start) * 1000),
 
-                'error_class' => $response?->getStatusCode() ?? 500,
+                'error_class' => $e ? get_class($e) : null,
                 'error_message' => $e ? $e->getMessage() : null,
             ]);
         } catch (Throwable $ignored) {

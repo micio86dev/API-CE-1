@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('v1')->middleware('set.lang')->group(function () {
+Route::prefix('v1')->middleware(['audit.log', 'set.lang'])->group(function () {
     Route::controller(AuthController::class)->name('login')->group(function () {
         Route::post('login', 'login')->name('.login');
     });
@@ -24,25 +24,16 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
             });
 
         //authors routes
+        $prefix = 'authors';
         Route::controller(AuthorController::class)
-            ->prefix('authors')
-            ->name('authors')
-            ->group(function () {
-                Route::get('', 'index')
-                    ->name('.index')
-                    ->middleware('permission:authors.index');
-                Route::get('{id}', 'show')
-                    ->name('.show')
-                    ->middleware('permission:authors.show');
-                Route::post('', 'store')
-                    ->name('.store')
-                    ->middleware('permission:authors.store');
-                Route::put('{id}', 'update')
-                    ->name('.update')
-                    ->middleware('permission:authors.update');
-                Route::delete('{id}', 'destroy')
-                    ->name('.destroy')
-                    ->middleware('permission:authors.destroy');
+            ->prefix($prefix)
+            ->name($prefix)
+            ->group(function () use ($prefix) {
+                Route::get('', 'index')->name('.index')->middleware("permission:$prefix.index");
+                Route::get('{id}', 'show')->name('.show')->middleware("permission:$prefix.show");
+                Route::post('', 'store')->name('.store')->middleware("permission:$prefix.store");
+                Route::put('{id}', 'update')->name('.update')->middleware("permission:$prefix.update");
+                Route::delete('{id}', 'destroy')->name('.destroy')->middleware("permission:$prefix.destroy");
             });
 
         // books routes
