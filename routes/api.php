@@ -65,7 +65,12 @@ Route::prefix('v1')->middleware('set.lang')->group(function () {
                 Route::delete('{id}', 'destroy')
                     ->name('.destroy')
                     ->middleware('permission:books.destroy');
+                Route::post('{id}/upload-front-cover', 'uploadFrontCover')
+                ->name('.upload_front_cover');
+                Route::post('{id}/upload-back-cover', 'uploadBackCover')
+                ->name('.upload_back_cover');
             });
+            
         // addresses routes
         $prefix = 'books_quantity';
         Route::controller(BookQuantityController::class)

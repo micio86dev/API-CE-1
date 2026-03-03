@@ -98,4 +98,40 @@ class BookController extends BaseController
     {
         return parent::baseDestroy($id);
     }
+
+    public function uploadFrontCover(\Illuminate\Http\Request $request, int $id): JsonResponse
+    {
+        $book = Book::findOrFail($id);
+
+        $request->validate([
+            'front_cover' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $book
+            ->addMedia($request->file('front_cover'))
+            ->toMediaCollection('front_cover');
+
+        return response()->json([
+            'message' => 'Front cover uploaded successfully.',
+            'front_cover_url' => $book->getFirstMediaUrl('front_cover'),
+        ], 200);
+    }
+
+    public function uploadBackCover(\Illuminate\Http\Request $request, int $id): JsonResponse
+    {
+        $book = Book::findOrFail($id);
+
+        $request->validate([
+            'back_cover' => ['required', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $book
+            ->addMedia($request->file('back_cover'))
+            ->toMediaCollection('back_cover');
+
+        return response()->json([
+            'message' => 'Back cover uploaded successfully.',
+            'back_cover_url' => $book->getFirstMediaUrl('back_cover'),
+        ], 200);
+    }
 }
