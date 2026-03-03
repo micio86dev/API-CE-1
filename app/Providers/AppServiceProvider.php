@@ -36,6 +36,12 @@ class AppServiceProvider extends ServiceProvider
         Scramble::configure()
             ->routes(function (Route $route) {
                 return Str::startsWith($route->uri, 'api/');
+            })
+            ->withDocumentTransformers(function (OpenApi $openApi) {
+                // Tell Scramble that all endpoints use Bearer JWT auth
+                $openApi->secure(
+                    SecurityScheme::http('bearer', 'JWT')
+                );
             });
 
         Gate::define('viewApiDocs', function ($user = null) {
@@ -45,13 +51,5 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function ($user, string $ability) {
             return $user->hasRole('admin') ? true : null;
         });
-
-        Scramble::configure()
-            ->withDocumentTransformers(function (OpenApi $openApi) {
-                // Tell Scramble that all endpoints use Bearer JWT auth
-                $openApi->secure(
-                    SecurityScheme::http('bearer', 'JWT')
-                );
-            });
     }
 }

@@ -3,14 +3,15 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
-
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Book extends BaseModel
+class Book extends BaseModel implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\BookFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = ['title', 'price', 'plot', 'published_at', 'collection_id'];
 
@@ -65,5 +66,11 @@ class Book extends BaseModel
         }*/
 
         return $this->quantities()->sum('quantity');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('front_cover')->singleFile();
+        $this->addMediaCollection('back_cover')->singleFile();
     }
 }
