@@ -28,7 +28,7 @@ class UserController extends BaseController
 
     protected function select(): array
     {
-        return ['id', 'name', 'email', 'password', 'created_at', 'updated_at'];
+        return ['id', 'name', 'email', 'created_at', 'updated_at'];
     }
 
     /**

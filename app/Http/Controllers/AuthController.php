@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\LoginRequest;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Resources\UserResource;
 
 class AuthController extends BaseController
 {
@@ -24,7 +24,7 @@ class AuthController extends BaseController
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Unauthorized'], 401); //todo: translation
         }
 
         return $this->respondWithToken($token);
@@ -37,7 +37,7 @@ class AuthController extends BaseController
      */
     public function me()
     {
-        return response()->json(JWTAuth::user());
+        return new UserResource(JWTAuth::user());
     }
 
     /**
@@ -48,7 +48,7 @@ class AuthController extends BaseController
     public function logout()
     {
         JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'Successfully logged out']); //todo: translation
     }
 
     /**
@@ -70,11 +70,14 @@ class AuthController extends BaseController
      * @return \Illuminate\Http\JsonResponse
      */
     protected function respondWithToken($token)
-    {
+    {   
+        $user = JWTAuth::user();
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl') * 60
+            'expires_in' => config('jwt.ttl') * 60,
+            'user' => (new UserResource($user))->resolve(),
         ]);
     }
 }
