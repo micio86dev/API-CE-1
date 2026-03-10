@@ -24,7 +24,7 @@ class AuthController extends BaseController
         $credentials = $request->only(['email', 'password']);
 
         if (! $token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401); //todo: translation
+            return response()->json(['error' => __('auth/validation.unauthorized')], 401);  
         }
 
         return $this->respondWithToken($token);
@@ -48,7 +48,7 @@ class AuthController extends BaseController
     public function logout()
     {
         JWTAuth::invalidate(JWTAuth::getToken());
-        return response()->json(['message' => 'Successfully logged out']); //todo: translation
+        return response()->json(['message' => __('auth/validation.logged_out')]);
     }
 
     /**
