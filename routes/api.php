@@ -10,6 +10,7 @@ Route::prefix('v1')->middleware(['audit.log', 'set.lang'])->group(function () {
     });
     Route::middleware(['auth.jwt'])->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('.me');
+        Route::post('logout', [AuthController::class, 'logout'])->name('.logout');
         // addresses routes
         $prefix = 'addresses';
         Route::controller(AddressController::class)
