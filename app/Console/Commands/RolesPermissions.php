@@ -113,12 +113,7 @@ class RolesPermissions extends Command
                 $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => $this->guardName]);
 
                 $permissions = $this->permissionsMap[$roleName] ?? [];
-
-                if ($roleName === 'admin') {
-                    $role->syncPermissions(Permission::all()); // now includes everything created above
-                } else {
-                    $role->syncPermissions($permissions);
-                }
+                $role->syncPermissions($permissions);
             }
 
             DB::commit();
