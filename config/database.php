@@ -178,6 +178,45 @@ return [
             'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
         ],
 
+        'ttl' => [
+            'url' => env('REDIS_TTL_URL', env('REDIS_URL')),
+            'host' => env('REDIS_TTL_HOST', env('REDIS_HOST', '127.0.0.1')),
+            'username' => env('REDIS_TTL_USERNAME', env('REDIS_USERNAME')),
+            'password' => env('REDIS_TTL_PASSWORD', env('REDIS_PASSWORD')),
+            'port' => env('REDIS_TTL_PORT', env('REDIS_PORT', '6379')),
+            'database' => env('REDIS_TTL_DB', '2'),
+            'max_retries' => env('REDIS_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+        ],
+
+        'persistent' => [
+            'url' => env('REDIS_PERSISTENT_URL', env('REDIS_URL')),
+            'host' => env('REDIS_PERSISTENT_HOST', env('REDIS_HOST', '127.0.0.1')),
+            'username' => env('REDIS_PERSISTENT_USERNAME', env('REDIS_USERNAME')),
+            'password' => env('REDIS_PERSISTENT_PASSWORD', env('REDIS_PASSWORD')),
+            'port' => env('REDIS_PERSISTENT_PORT', env('REDIS_PORT', '6379')),
+            'database' => env('REDIS_PERSISTENT_DB', '3'),
+            'max_retries' => env('REDIS_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+        ],
+
+        'queue' => [
+            'url' => env('REDIS_QUEUE_URL', env('REDIS_URL')),
+            'host' => env('REDIS_QUEUE_HOST', env('REDIS_HOST', '127.0.0.1')),
+            'username' => env('REDIS_QUEUE_USERNAME', env('REDIS_USERNAME')),
+            'password' => env('REDIS_QUEUE_PASSWORD', env('REDIS_PASSWORD')),
+            'port' => env('REDIS_QUEUE_PORT', env('REDIS_PORT', '6379')),
+            'database' => env('REDIS_QUEUE_DB', '4'),
+            'max_retries' => env('REDIS_MAX_RETRIES', 3),
+            'backoff_algorithm' => env('REDIS_BACKOFF_ALGORITHM', 'decorrelated_jitter'),
+            'backoff_base' => env('REDIS_BACKOFF_BASE', 100),
+            'backoff_cap' => env('REDIS_BACKOFF_CAP', 1000),
+        ],
+
     ],
 
 ];

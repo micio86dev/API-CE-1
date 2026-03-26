@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\RedisModelCacheService;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\JsonResponse;
@@ -62,6 +63,8 @@ class BaseController extends Controller
 
     protected array $result = [];
     protected int $status = 400;
+    protected int $showCacheTtlSeconds = 300;
+    protected int $indexCacheTtlSeconds = 120;
 
 
     /**
@@ -69,24 +72,51 @@ class BaseController extends Controller
      */
     public function baseIndex(?FormRequest $request = null): JsonResponse
     {
+        $perPage = max(1, (int) ($request?->input('perpage', 10) ?? 10));
+        $page = max(1, (int) ($request?->input('page', 1) ?? 1));
+
+        if ($this->usesModelCache()) {
+            $filters = $request?->query() ?? [];
+            unset($filters['page'], $filters['perpage']);
+            $this->result['data'] = $this->cacheService()->getOrRememberIndex(
+                modelClass: $this->primaryModel,
+                filters: $filters,
+                relations: $this->indexRelations,
+                page: $page,
+                perPage: $perPage,
+                ttl: $this->indexCacheTtlSeconds,
+                resolver: function () use ($request, $perPage, $page) {
+                    $query = $this->buildIndexQuery($request);
+                    return $query->paginate($perPage, ['*'], 'page', $page);
+                }
+            );
+        } else {
+            $query = $this->buildIndexQuery($request);
+            $this->result['data'] = $query->paginate($perPage, ['*'], 'page', $page);
+        }
+
+        $this->status = 200;
+
+        return $this->jsonData();
+    }
+
+    protected function buildIndexQuery(?FormRequest $request = null)
+    {
         $query = $this->primaryModel::select($this->select());
 
         if (!empty($this->indexRelations)) {
             $query->with($this->indexRelations);
         }
-        // Apply custom filters if they are defined
-        if ($request && $request instanceof FormRequest && !empty($this->searchableFields)) {
+
+        if ($request && !empty($this->searchableFields)) {
             $this->customFilters($request, $query);
         }
-        // Apply relation filters if they are defined
-        if ($request && $request instanceof FormRequest && !empty($this->relationFilters)) {
+
+        if ($request && !empty($this->relationFilters)) {
             $this->applyRelationFilters($request, $query);
         }
 
-        $this->result['data'] = $query->paginate($request?->perpage ?? 10); //default 10 items per page
-        $this->status = 200;
-
-        return $this->jsonData();
+        return $query;
     }
 
     protected function customFilters(FormRequest $request, $query)
@@ -223,6 +253,7 @@ class BaseController extends Controller
 
         $this->result['data'] = $item;
         $this->status = 201;
+        $this->invalidateModelCacheAfterWrite((int) $item->getKey(), $item);
 
         return $this->jsonData();
     }
@@ -232,16 +263,38 @@ class BaseController extends Controller
      */
     public function baseShow(int $id): JsonResponse
     {
-        $query = $this->primaryModel::select($this->select());
-
-        if (!empty($this->detailRelations)) {
-            $query->with($this->detailRelations);
-        } elseif (!empty($this->indexRelations)) {
-            $query->with($this->indexRelations);
-        }
-
         try {
-            $this->result['data'] = $query->findOrFail($id);
+            if ($this->usesModelCache()) {
+                $relations = $this->showRelations();
+                $this->result['data'] = $this->cacheService()->getOrRememberShow(
+                    modelClass: $this->primaryModel,
+                    id: $id,
+                    relations: $relations,
+                    ttl: $this->showCacheTtlSeconds,
+                    resolver: function () use ($id) {
+                        $query = $this->primaryModel::select($this->select());
+
+                        if (!empty($this->detailRelations)) {
+                            $query->with($this->detailRelations);
+                        } elseif (!empty($this->indexRelations)) {
+                            $query->with($this->indexRelations);
+                        }
+
+                        return $query->findOrFail($id);
+                    }
+                );
+            } else {
+                $query = $this->primaryModel::select($this->select());
+
+                if (!empty($this->detailRelations)) {
+                    $query->with($this->detailRelations);
+                } elseif (!empty($this->indexRelations)) {
+                    $query->with($this->indexRelations);
+                }
+
+                $this->result['data'] = $query->findOrFail($id);
+            }
+
             $this->status = 200;
         } catch (Exception $e) {
             $this->result['message'] = __((new $this->primaryModel)->getTable() . '/validation.not_found');
@@ -278,6 +331,7 @@ class BaseController extends Controller
 
         $this->result['data'] = $item;
         $this->status = 200;
+        $this->invalidateModelCacheAfterWrite($id, $item);
 
         return $this->jsonData();
     }
@@ -291,6 +345,8 @@ class BaseController extends Controller
         /** @var Model $item */
         $item = $modelClass::findOrFail($id);
         $item->delete();
+
+        $this->invalidateModelCacheAfterWrite($id);
 
         $this->status = 204;
         $this->result = [];
@@ -395,6 +451,36 @@ class BaseController extends Controller
                 }
             }
         }
+    }
+
+    protected function cacheService(): RedisModelCacheService
+    {
+        return app(RedisModelCacheService::class);
+    }
+
+    protected function usesModelCache(): bool
+    {
+        return (bool) config('cache.redis_model.enabled', true);
+    }
+
+    protected function invalidateModelCacheAfterWrite(?int $id, ?Model $freshModel = null): void
+    {
+        if (!$this->usesModelCache()) {
+            return;
+        }
+
+        $this->cacheService()->refreshAfterWrite(
+            modelClass: $this->primaryModel,
+            id: $id,
+            freshModel: $freshModel,
+            relations: $this->showRelations(),
+            showTtl: $this->showCacheTtlSeconds
+        );
+    }
+
+    protected function showRelations(): array
+    {
+        return !empty($this->detailRelations) ? $this->detailRelations : $this->indexRelations;
     }
 
     private function userHasRole(string $role): bool
